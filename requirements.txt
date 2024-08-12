@@ -5,3 +5,6 @@ openpyxl
 openpyxl.utils.dataframe
 streamlit
 io
+os
+scipy.interpolate
+statsmodels.api
