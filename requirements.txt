@@ -3,6 +3,5 @@ pandas
 netCDF4
 openpyxl
 streamlit
-os
 scipy
 statsmodels
