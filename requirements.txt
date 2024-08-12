@@ -1,6 +1,5 @@
 numpy
 pandas
-os
 netCDF4
 statsmodels.api
 openpyxl
