@@ -2,9 +2,8 @@ numpy
 pandas
 netCDF4
 openpyxl
-openpyxl.utils.dataframe
 streamlit
 io
 os
-scipy.interpolate
-statsmodels.api
+scipy
+statsmodels
