@@ -1,6 +1,5 @@
 #%% PRESTART
 
-pip install -r requirements.txt
 import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
