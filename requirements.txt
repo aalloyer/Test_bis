@@ -1,7 +1,6 @@
 numpy
 pandas
 netCDF4
-statsmodels.api
 openpyxl
 openpyxl.utils.dataframe
 streamlit
