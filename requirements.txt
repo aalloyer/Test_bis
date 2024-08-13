@@ -5,5 +5,5 @@ openpyxl
 streamlit
 scipy
 statsmodels
-s3fs==x.x.x
+s3fs
 st-files-connection
