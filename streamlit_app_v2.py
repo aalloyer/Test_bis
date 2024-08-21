@@ -267,31 +267,29 @@ if uploaded_file is not None:
                                case_study_proj_2_xts, 
                                case_study_proj_3_xts])
     
-    output_tot_list = output_tot
+
     output_df = pd.DataFrame(output_tot_list, index = model_list )
     output_all_list = []
-    test = []
     
     for i in range(0, len(model_list)):
-        values = np.concatenate([test.iloc[i][0].values,
-                                 test.iloc[i][1].values,
-                                 test.iloc[i][2].values])
-        index = np.concatenate([test.iloc[i][0].index,
-                                test.iloc[i][1].index,
-                                test.iloc[i][2].index])
+        values = np.concatenate([output_df.iloc[i][0].values,
+                                 output_df.iloc[i][1].values,
+                                 output_df.iloc[i][2].values])
+        index = np.concatenate([output_df.iloc[i][0].index,
+                                output_df.iloc[i][1].index,
+                                output_df.iloc[i][2].index])
         output_all_list.append(pd.Series(values, index = index))
-    
-    
-    output_all_df = pd.DataFrame(output_all_list, index = model_list )
-    
+        
     model_list.append('Mean')
     mean_values = np.mean([ts.values for ts in output_all_list], axis=0)
-    output_all_list.append(pd.Series(mean_values, index =output_all_list[0].index))
+    mean_temperature_series = pd.Series(mean_values, index =output_all_list[0].index)
+    output_all_list.append(mean_temperature_series)
     
     windspeed_tot = np.concatenate([case_study_mast_hourly_windspeed_xts.values,
                                    case_study_mast_hourly_windspeed_xts.values,
                                    case_study_mast_hourly_windspeed_xts.values])
-    
+    windspeed_tot_series = pd.Series(windspeed_tot, index = output_all_list[0].index)
+
     # wb = Workbook()
     
     # ws = wb.create_sheet(title=f"{model_list[-1]}")
@@ -309,13 +307,15 @@ if uploaded_file is not None:
     
     # Créer le classeur Excel et ajouter les données
     wb = Workbook()
-    ws = wb.create_sheet(title=f"{model_list[-1]}")
-    data = {
+    ws = wb.active
+    ws.title = "Derating Temperature Projection - full period"
+
+    output_mean_df = pd.DataFrame({
         "Timestamp" : output_all_list[-1].index,
         "Windspeed [m/s]": windspeed_tot,
         "Temperature [Deg C]": output_all_list[-1].values
-    }
-    df = pd.DataFrame(data)
+    })
+    
     for r in dataframe_to_rows(df, index=False, header=True):
         ws.append(r)
     
