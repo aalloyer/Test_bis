@@ -296,54 +296,56 @@ if uploaded_file is not None:
                                    case_study_mast_hourly_windspeed_xts.values,
                                    case_study_mast_hourly_windspeed_xts.values])
     windspeed_tot_series = pd.Series(windspeed_tot, index = output_all_list[0].index)
-
-# Traitement de la série temporelle 
-implementation_month, implementation_year = implementation_date.split('/')
-final_year = int(implementation_year) + lifetime
-
-
-windfarm_start = f"{implementation_year}-{implementation_month}-01"
-windfarm_end = f"{final_year}-{implementation_month}-01"
-
-if pd.to_datetime(windfarm_end) <= output_all_list[0].index[-1]:
-    mean_temperature_extract_series = mean_temperature_series[windfarm_start:windfarm_end]
-    windspeed_extract_series = windspeed_tot_series[windfarm_start:windfarm_end]
     
-    output_extract_df = pd.DataFrame({
-        "Timestamp": mean_temperature_extract_series.index,
-        "Windspeed [m/s]": windspeed_extract_series.values, 
-        "Temperature [deg C]": mean_temperature_extract_series.values
-    }) 
-
-    # extraction température moyenne et la slope
-    mean_temperature_extract_value = np.mean(output_extract_df['Temperature [Deg C]'])
-    st.write(f"Mean temperature on selected period : {mean_temperature_extract_value}°C")
+    # Traitement de la série temporelle 
+    implementation_month, implementation_year = implementation_date.split('/')
+    final_year = int(implementation_year) + lifetime
     
-    if int(implementation_month) != 1 :
-        for_slope_xts = mean_temperature_extract_series[f"{implementation_year+1}-01-01":
-                                               f"{final_year-1}-12-31"]
+    
+    windfarm_start = f"{implementation_year}-{implementation_month}-01"
+    windfarm_end = f"{final_year}-{implementation_month}-01"
+    
+    if pd.to_datetime(windfarm_end) <= output_all_list[0].index[-1]:
+        mean_temperature_extract_series = mean_temperature_series[windfarm_start:windfarm_end]
+        windspeed_extract_series = windspeed_tot_series[windfarm_start:windfarm_end]
         
-        for_slope_annual_xts = for_slope_xts.resample('A').mean()
-        for_slope_year = for_slope_xts.index.year
-        X_i = sm.add_constant(for_slope_year)  
-        regression_extract= sm.OLS(for_slope_annual_xts, X_i).fit()
-        slope_extract = regression_extract.params[1]
+        output_extract_df = pd.DataFrame({
+            "Timestamp": mean_temperature_extract_series.index,
+            "Windspeed [m/s]": windspeed_extract_series.values, 
+            "Temperature [deg C]": mean_temperature_extract_series.values
+        }) 
+    
+        # extraction température moyenne et la slope
+        mean_temperature_extract_value = np.mean(output_extract_df['Temperature [Deg C]'])
+        st.write(f"Mean temperature on selected period : {mean_temperature_extract_value}°C")
+        
+        if int(implementation_month) != 1 :
+            for_slope_xts = mean_temperature_extract_series[f"{implementation_year+1}-01-01":
+                                                   f"{final_year-1}-12-31"]
+            
+            for_slope_annual_xts = for_slope_xts.resample('A').mean()
+            for_slope_year = for_slope_xts.index.year
+            X_i = sm.add_constant(for_slope_year)  
+            regression_extract= sm.OLS(for_slope_annual_xts, X_i).fit()
+            slope_extract = regression_extract.params[1]
+        else :
+            for_slope_annual_xts = for_slope_xts.resample('A').mean()
+            for_slope_year = for_slope_xts.index.year
+            X_i = sm.add_constant(for_slope_year)  
+            regression_extract= sm.OLS(for_slope_annual_xts, X_i).fit()
+            slope_extract = regression_extract.params[1]
+    
+        st.write(f"Annual temperature increase on selected period : {slope_extract}°C/year")
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Derating Temperature Projection - extract period"
+        for r in dataframe_to_rows(output_extract_df, index=False, header=True):
+            ws.append(r)
+        wb.save("Derating Temperature Projection - extract period.xlsx")
+    
     else :
-        for_slope_annual_xts = for_slope_xts.resample('A').mean()
-        for_slope_year = for_slope_xts.index.year
-        X_i = sm.add_constant(for_slope_year)  
-        regression_extract= sm.OLS(for_slope_annual_xts, X_i).fit()
-        slope_extract = regression_extract.params[1]
-
-    st.write(f"Annual temperature increase on selected period : {slope_extract}°C/year")
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Derating Temperature Projection - extract period"
-    for r in dataframe_to_rows(output_extract_df, index=False, header=True):
-        ws.append(r)
-    wb.save("Derating Temperature Projection - extract period.xlsx")
-
-else :
-    print("L'année de fin de vie dépasse la période prédite.")    
+        print("L'année de fin de vie dépasse la période prédite.")    
+        
+    uploaded_file = None
 
     
