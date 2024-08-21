@@ -268,7 +268,7 @@ if uploaded_file is not None:
                                case_study_proj_3_xts])
     
 
-    output_df = pd.DataFrame(output_tot_list, index = model_list )
+    output_df = pd.DataFrame(output_tot, index = model_list )
     output_all_list = []
     
     for i in range(0, len(model_list)):
