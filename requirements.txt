@@ -5,7 +5,6 @@ openpyxl
 streamlit
 scipy
 statsmodels
-s3fs
 statsmodels.api
 openpyxl.utils.dataframe
 io
