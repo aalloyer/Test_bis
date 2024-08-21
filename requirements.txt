@@ -7,3 +7,7 @@ scipy
 statsmodels
 s3fs
 st-files-connection
+scipy.interpolate
+statsmodels.api
+openpyxl.utils.dataframe
+io
