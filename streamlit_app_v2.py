@@ -60,7 +60,7 @@ st.sidebar.title("INPUTS")
 # afficher hypothèses sur longitude et latitude
 lon_site = st.sidebar.number_input("Longitude : ", step=0.1) # intervalle ? 
 lat_site = st.sidebar.number_input("Latitude", step=0.1) # intervalle ? 
-implementation date = st.sidebar.text_input("Implementation date (MM/YYYY)") # MM/YYYY as string
+implementation_date = st.sidebar.text_input("Implementation date (MM/YYYY)") # MM/YYYY as string
 lifetime = st.sidebar.number_input("Lifetime (in years)", step=1) 
 
 # uploading file
