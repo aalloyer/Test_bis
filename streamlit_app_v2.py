@@ -316,7 +316,7 @@ if uploaded_file is not None:
         st.write(f"Mean temperature on selected period : {mean_temperature_extract_value}°C")
         
         if int(implementation_month) != 1 :
-            for_slope_xts = mean_temperature_extract_series[f"{implementation_year+1}-01-01":
+            for_slope_xts = mean_temperature_extract_series[f"{int(implementation_year)+1}-01-01":
                                                    f"{final_year-1}-12-31"]
             
             for_slope_annual_xts = for_slope_xts.resample('A').mean()
