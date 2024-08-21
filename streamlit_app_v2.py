@@ -124,8 +124,8 @@ if uploaded_file is not None:
     case_study_mast_annual_xts = case_study_mast_hourly_xts.resample('A').mean()
 
     path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'shrunk_data'))
-    fichiers_data = os.listdir(path_data)
-    st.write(fichiers_data)
+    #fichiers_data = os.listdir(path_data)
+    #st.write(fichiers_data)
     
     model_list = ['bcc_csm2_mr',
                   'cnrm_esm2_1',
@@ -139,7 +139,7 @@ if uploaded_file is not None:
     for model in model_list :
             
             #CMIP DATA TREATMENT - HISTORICAL 
-            path_cmip_hist = f"{path}/historical/{model}_historical/"
+            path_cmip_hist = f"{path_data}/historical/{model}_historical/"
             file_hist = os.listdir(path_cmip_hist)
             nc_hist = nc.Dataset(f"{path_cmip_hist}{file_hist[0]}")
     
@@ -151,7 +151,7 @@ if uploaded_file is not None:
     
             
             #CMIP DATA TREATMENT - PROJECTION 
-            path_cmip_proj = f"{path}/ssp3_7_0/{model}_ssp3_7_0/"
+            path_cmip_proj = f"{path_data}/ssp3_7_0/{model}_ssp3_7_0/"
             file_proj =os.listdir(path_cmip_proj)
             nc_proj = nc.Dataset(f"{path_cmip_proj}{file_proj[0]}")
             
