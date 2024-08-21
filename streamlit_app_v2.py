@@ -312,6 +312,7 @@ if uploaded_file is not None:
     
         # extraction température moyenne et la slope
         mean_temperature_extract_value = np.mean(mean_temperature_extract_series.values)
+        mean_temperature_extract_value = round(mean_temperature_extract_value, 2)
         st.write(f"Mean temperature on selected period : {mean_temperature_extract_value}°C")
         
         if int(implementation_month) != 1 :
@@ -329,7 +330,8 @@ if uploaded_file is not None:
             X_i = sm.add_constant(for_slope_year)  
             regression_extract= sm.OLS(for_slope_annual_xts, X_i).fit()
             slope_extract = regression_extract.params[1]
-    
+
+        slope_extract = round(slope_extract, 2)
         st.write(f"Annual temperature increase on selected period : {slope_extract}°C/year")
         wb = Workbook()
         ws = wb.active
