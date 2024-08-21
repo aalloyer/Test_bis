@@ -123,10 +123,9 @@ if uploaded_file is not None:
     # case_study_mast_monthly_xts = case_study_mast_monthly_xts[case_study_mast_monthly_xts.index <= "2022-12-31 23:59:59"]
     case_study_mast_annual_xts = case_study_mast_hourly_xts.resample('A').mean()
 
-    
-    path = "/shrunk_data"
-    list = os.listdir(path)
-    print(list)
+    path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'shrunk_data'))
+    fichiers_data = os.listdir(path_data)
+    print(fichiers_data)
     
     model_list = ['bcc_csm2_mr',
                   'cnrm_esm2_1',
