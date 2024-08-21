@@ -335,10 +335,10 @@ if uploaded_file is not None:
         st.write(f"Annual temperature increase on selected period : {slope_extract}°C/year")
         wb = Workbook()
         ws = wb.active
-        ws.title = "Derating Temperature Projection - extract period"
+        ws.title = "Temperature Projection - extract period"
         for r in dataframe_to_rows(output_extract_df, index=False, header=True):
             ws.append(r)
-        wb.save("Derating Temperature Projection - extract period.xlsx")
+        wb.save("Temperature Projection - extract period.xlsx")
     
     else :
         print("L'année de fin de vie dépasse la période prédite.")    
