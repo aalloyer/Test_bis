@@ -54,7 +54,7 @@ def nearest_point_cmip(lon_, lat_, nc_input):
 #%%INPUTS
 
 # geographical data input
-st.sidebar.title("Gegraphical Data")
+st.sidebar.title("Geographical Data")
 
 # attention indiquer les hypothèses sur longitude et latitude
 lon_site = st.sidebar.number_input("Longitude : ", step=0.1)
