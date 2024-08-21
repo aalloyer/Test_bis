@@ -320,13 +320,13 @@ if uploaded_file is not None:
                                                    f"{final_year-1}-12-31"]
             
             for_slope_annual_xts = for_slope_xts.resample('A').mean()
-            for_slope_year = for_slope_xts.index.year
+            for_slope_year = for_slope_annual_xts.index.year
             X_i = sm.add_constant(for_slope_year)  
             regression_extract= sm.OLS(for_slope_annual_xts, X_i).fit()
             slope_extract = regression_extract.params[1]
         else :
             for_slope_annual_xts = mean_temperature_extract_series.resample('A').mean()
-            for_slope_year = for_slope_xts.index.year
+            for_slope_year = for_slope_annual_xts.index.year
             X_i = sm.add_constant(for_slope_year)  
             regression_extract= sm.OLS(for_slope_annual_xts, X_i).fit()
             slope_extract = regression_extract.params[1]
