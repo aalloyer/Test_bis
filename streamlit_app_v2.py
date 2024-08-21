@@ -316,7 +316,7 @@ if uploaded_file is not None:
         "Temperature [Deg C]": output_all_list[-1].values
     })
     
-    for r in dataframe_to_rows(df, index=False, header=True):
+    for r in dataframe_to_rows(output_mean_df, index=False, header=True):
         ws.append(r)
     
     # Enregistrer le classeur Excel en mémoire
