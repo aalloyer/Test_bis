@@ -316,7 +316,7 @@ if uploaded_file is not None:
         }) 
     
         # extraction température moyenne et la slope
-        mean_temperature_extract_value = np.mean(output_extract_df['Temperature [Deg C]'])
+        mean_temperature_extract_value = np.mean(mean_temperature_extract_series.values)
         st.write(f"Mean temperature on selected period : {mean_temperature_extract_value}°C")
         
         if int(implementation_month) != 1 :
