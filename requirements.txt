@@ -6,7 +6,6 @@ streamlit
 scipy
 statsmodels
 s3fs
-scipy.interpolate
 statsmodels.api
 openpyxl.utils.dataframe
 io
