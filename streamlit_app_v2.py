@@ -124,7 +124,9 @@ if uploaded_file is not None:
     case_study_mast_annual_xts = case_study_mast_hourly_xts.resample('A').mean()
 
     
-    path = "//frdefcp-fs01/Ingenierie/Departements/Ing_EOLIEN/3-Savoir-Experience/Innovation_&_R&D/Innovation/17_Climate Change/5_Internship/temperature/data/Near_surface_air_temperature"
+    path = "/data"
+    list = os.listdir(path)
+    print(list)
     
     model_list = ['bcc_csm2_mr',
                   'cnrm_esm2_1',
