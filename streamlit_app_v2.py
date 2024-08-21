@@ -341,6 +341,5 @@ if uploaded_file is not None:
     else :
         print("L'année de fin de vie dépasse la période prédite.")    
         
-    uploaded_file = None
 
     
