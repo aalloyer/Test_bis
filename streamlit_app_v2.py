@@ -57,13 +57,19 @@ def nearest_point_cmip(lon_, lat_, nc_input):
 # geographical data input
 st.sidebar.title("Geographical Data")
 
-# attention indiquer les hypothèses sur longitude et latitude
-lon_site = st.sidebar.number_input("Longitude : ", step=0.1)
-lat_site = st.sidebar.number_input("Latitude", step=0.1)
-
+# afficher hypothèses sur longitude et latitude
+lon_site = st.sidebar.number_input("Longitude : ", step=0.1) # intervalle ? 
+lat_site = st.sidebar.number_input("Latitude", step=0.1) # intervalle ? 
+impltementation_data = st.sidebar.text_input("Implementation date (MM/YYYY)") # MM/YYYY as string
+lifetime = st.sidebar.number_input("Lifetime (in years)", step=1) 
 
 # uploading file
 uploaded_file = st.file_uploader("Choose a file")
+
+#%% FLAG
+telecharge = False
+upload_termine = False
+excel_cree = False
 
 if uploaded_file is not None:
     case_study_mast = pd.read_excel(uploaded_file,
@@ -291,44 +297,66 @@ if uploaded_file is not None:
                                    case_study_mast_hourly_windspeed_xts.values])
     windspeed_tot_series = pd.Series(windspeed_tot, index = output_all_list[0].index)
 
-    # wb = Workbook()
+# Traitement de la série temporelle 
+implementation_month, implementation_year = implementation_date.split('/')
+final_year = int(implementation_year) + lifetime
+
+
+windfarm_start = f"{implementation_year}-{implementation_month}-01"
+windfarm_end = f"{final_year}-{implementation_month}-01"
+
+if pd.to_datetime(windfarm_end) <= output_all_list[0].index[-1]:
+    mean_temperature_extract_series = mean_temperature_series[windfarm_start:windfarm_end]
+    windspeed_extract_series = windspeed_tot_series[windfarm_start:windfarm_end]
     
-    # ws = wb.create_sheet(title=f"{model_list[-1]}")
-    # data = {
-    #     "Timestamp" : output_all_list[-1].index,
-    #     "Windspeed [m/s]": windspeed_tot,
-    #     "Temperature [Deg C]": output_all_list[-1].values
-    #     }
+    output_extract_df = pd.DataFrame({
+        "Timestamp": mean_temperature_extract_series.index,
+        "Windspeed [m/s]": windspeed_extract_series.values, 
+        "Temperature [deg C]": mean_temperature_extract_series.values
+    }) 
     
-    # df = pd.DataFrame(data)
-    # for r in dataframe_to_rows(df, index=False, header=True):
-    #     ws.append(r)
+    # extraction température moyenne et la slope
+    mean_temperature_extract_value = np.mean(output_extract_df['Temperature [Deg C]'])
+    st.write(f"Mean temperature on selected period : {mean_temperature_extract_value}°C")
     
-    # wb.save("output_new.xlsx")
-    
-    # Créer le classeur Excel et ajouter les données
     wb = Workbook()
     ws = wb.active
-    ws.title = "Derating Temperature Projection - full period"
-
-    output_mean_df = pd.DataFrame({
-        "Timestamp" : output_all_list[-1].index,
-        "Windspeed [m/s]": windspeed_tot,
-        "Temperature [Deg C]": output_all_list[-1].values
-    })
-    
-    for r in dataframe_to_rows(output_mean_df, index=False, header=True):
+    ws.title = "Derating Temperature Projection - extract period"
+    for r in dataframe_to_rows(output_extract_df, index=False, header=True):
         ws.append(r)
-    
-    # Enregistrer le classeur Excel en mémoire
-    output = BytesIO()
-    wb.save(output)
-    output.seek(0)
-    
-    # Créer le bouton de téléchargement
-    st.download_button(
-        label="Télécharger le fichier Excel",
-        data=output,
-        file_name="output_new.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+    wb.save("Derating Temperature Projection - extract period.xlsx")
+
+else :
+    print("L'année de fin de vie dépasse la période prédite.")    
+
+#if upload_termine and not excel_cree:
+
+#    wb = Workbook()
+#    ws = wb.active
+#    ws.title = "Derating Temperature Projection - full period"
+#
+#    output_mean_df = pd.DataFrame({
+#        "Timestamp" : output_all_list[-1].index,
+#        "Windspeed [m/s]": windspeed_tot,
+#        "Temperature [Deg C]": output_all_list[-1].values
+#    })
+#    
+#    for r in dataframe_to_rows(output_mean_df, index=False, header=True):
+#        ws.append(r)
+#    
+#    # Enregistrer le classeur Excel en mémoire
+#    output = BytesIO()
+#    wb.save(output)
+#    output.seek(0)
+#    
+#    st.download_button(
+#        label="Télécharger le fichier Excel",
+#        data=output,
+#        file_name="output_new.xlsx",
+#        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+#    )
+#
+#    excel_cree = True
+#    # et même téléchargé
+
+
