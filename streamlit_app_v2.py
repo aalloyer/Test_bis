@@ -124,7 +124,7 @@ if uploaded_file is not None:
     case_study_mast_annual_xts = case_study_mast_hourly_xts.resample('A').mean()
 
     
-    path = "/data"
+    path = "/shrunk_data"
     list = os.listdir(path)
     print(list)
     
