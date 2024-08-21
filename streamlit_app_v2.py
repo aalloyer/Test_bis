@@ -125,7 +125,7 @@ if uploaded_file is not None:
 
     path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'shrunk_data'))
     fichiers_data = os.listdir(path_data)
-    print(fichiers_data)
+     st.write(fichiers_data)
     
     model_list = ['bcc_csm2_mr',
                   'cnrm_esm2_1',
