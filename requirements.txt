@@ -3,7 +3,6 @@ pandas
 netCDF4
 openpyxl
 streamlit
-scipy
 openpyxl.utils.dataframe
 io
 os
