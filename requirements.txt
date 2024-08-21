@@ -1,5 +1,9 @@
 numpy
 pandas
 netCDF4
-io
-os
+openpyxl
+streamlit
+scipy
+statsmodels
+s3fs
+st-files-connection
