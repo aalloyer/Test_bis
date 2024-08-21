@@ -1,7 +1,5 @@
 numpy
 pandas
 netCDF4
-openpyxl
-openpyxl.utils.dataframe
 io
 os
