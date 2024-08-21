@@ -298,7 +298,7 @@ if uploaded_file is not None:
     
     
     windfarm_start = f"{implementation_year}-{implementation_month}-01"
-    windfarm_end = f"{final_year}-{implementation_month}-01"
+    windfarm_end = f"{str(final_year)}-{implementation_month}-01"
     
     if pd.to_datetime(windfarm_end) <= output_all_list[0].index[-1]:
         mean_temperature_extract_series = mean_temperature_series[windfarm_start:windfarm_end]
