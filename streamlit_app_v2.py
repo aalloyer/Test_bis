@@ -66,11 +66,6 @@ lifetime = st.sidebar.number_input("Lifetime (in years)", step=1)
 # uploading file
 uploaded_file = st.file_uploader("Choose a file")
 
-#%% FLAG
-telecharge = False
-upload_termine = False
-excel_cree = False
-
 if uploaded_file is not None:
     case_study_mast = pd.read_excel(uploaded_file,
                             sheet_name="Reconst", 
