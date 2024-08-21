@@ -4,8 +4,6 @@ netCDF4
 openpyxl
 streamlit
 scipy
-statsmodels
-statsmodels.api
 openpyxl.utils.dataframe
 io
 os
