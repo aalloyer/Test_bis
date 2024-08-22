@@ -352,12 +352,12 @@ if uploaded_file is not None:
         )
 
         if not telecharge:
-        telecharge = st.download_button(
-            label="Télécharger le fichier Excel",
-            data=output,
-            file_name="T&WS-TS.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+            telecharge = st.download_button(
+                label="Télécharger le fichier Excel",
+                data=output,
+                file_name="T&WS-TS.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
 
         if telecharge:
             st.write("Le fichier a été téléchargé. L'exécution du code s'arrête ici.")
