@@ -45,8 +45,8 @@ def nearest_point_cmip(lon_, lat_, nc_input):
     time = pd.to_datetime(time)
     nearest_lon = np.argmin(np.abs(lon - lon_))
     nearest_lat = np.argmin(np.abs(lat - lat_))
-    st.write(lon[nearest_lon])
-    st.write(lat[nearest_lat])
+    #st.write(lon[nearest_lon])
+    #st.write(lat[nearest_lat])
     temperature = nc_input.variables["tas"][:,nearest_lat,nearest_lon]
 
     return pd.Series(temperature, index=time)
@@ -333,13 +333,22 @@ if uploaded_file is not None:
 
         slope_extract = round(slope_extract, 2)
         st.write(f"Annual temperature increase on selected period : {slope_extract}°C/year")
+        
         wb = Workbook()
         ws = wb.active
         ws.title = "Temperature Projection - extract period"
         for r in dataframe_to_rows(output_extract_df, index=False, header=True):
             ws.append(r)
         wb.save("Temperature Projection - extract period.xlsx")
-    
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+        st.download_button(
+        label="Télécharger le fichier Excel",
+        data=output,
+        file_name="T&WS-TS.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
     else :
         print("L'année de fin de vie dépasse la période prédite.")    
         
