@@ -58,16 +58,16 @@ def nearest_point_cmip(lon_, lat_, nc_input):
 st.sidebar.title("INPUTS")
 
 # afficher hypothèses sur longitude et latitude
-lon_site = st.sidebar.number_input("Longitude : ", step=0.1) # intervalle ? 
+lon_site = st.sidebar.number_input("Longitude (entre 0° et 360°) : ", step=0.1)
 lat_site = st.sidebar.number_input("Latitude", step=0.1) # intervalle ? 
-implementation_date = st.sidebar.text_input("Implementation date (MM/YYYY)") # MM/YYYY as string
+implementation_date = st.sidebar.text_input("Implementation date (MM/YYYY)")
 lifetime = st.sidebar.number_input("Lifetime (in years)", step=1) 
 
 #%% Interface
 telecharge = False
 uploaded_file = st.file_uploader("Choose a file")
 
-if uploaded_file is not None:
+if uploaded_file is not None: # conformité des fichiers ? 
     case_study_mast = pd.read_excel(uploaded_file,
                             sheet_name="Reconst", 
                             skiprows=3)
@@ -77,7 +77,7 @@ if uploaded_file is not None:
         'temperature': case_study_mast['T° 4m LT dowscaled'],
         'windspeed': case_study_mast['WS 120m LT reconst MCP']
     })
-    case_study_mast_df = case_study_mast_df.iloc[1:]
+    case_study_mast_df = case_study_mast_df.iloc[1:] 
     case_study_mast_df['temperature'] = pd.to_numeric(case_study_mast_df['temperature'], errors='coerce')
     case_study_mast_df['windspeed'] = pd.to_numeric(case_study_mast_df['windspeed'], errors='coerce')
     case_study_mast_hourly_xts = pd.Series(case_study_mast_df['temperature'].values,
@@ -95,17 +95,17 @@ if uploaded_file is not None:
     
     
     if case_study_mast_hourly_xts.index.isin(hours_in_start_year_brut).all():
-        st.write(f"L'annÃ©e {start_year_brut} est pleine.")
+        st.write(f"L'année {start_year_brut} est pleine. La TS commence en janvier {start_year_brut}.")
         start_bool = False
     else:
-        st.write(f"L'annÃ©e {start_year_brut} n'est pas pleine.")
+        st.write(f"L'année {start_year_brut} n'est pas pleine. La TS commence en janvier {start_year_brut+1}.")
         start_bool = True
     
     if case_study_mast_hourly_xts.index.isin(hours_in_end_year_brut).all():
-        st.write(f"L'annÃ©e {end_year_brut} est pleine.")
+        st.write(f"L'année {end_year_brut} est pleine. La TS termine en décembre {end_year_brut}.")
         end_bool = False
     else:
-        st.write(f"L'annÃ©e {end_year_brut} n'est pas pleine.")
+        st.write(f"L'année {end_year_brut} n'est pas pleine. La TS termine en décembre {end_year_brut-1}.")
         end_bool = True
         
     if start_bool :
@@ -116,11 +116,10 @@ if uploaded_file is not None:
         case_study_mast_hourly_windspeed_xts = case_study_mast_hourly_windspeed_xts[:f"{end_year_brut-1}-12-31"]
     
     # s'arrête à 23h du dernier jour de l'anée
-    
     start_year = int(case_study_mast_hourly_xts.index[0].strftime('%Y'))
     end_year = int(case_study_mast_hourly_xts.index[-1].strftime('%Y'))
     
-    # CrÃ©ation des TS monthly pour DS, et annual pour linear model
+    # Création des TS monthly pour DS, et annual pour linear model
     
     case_study_mast_monthly_xts = case_study_mast_hourly_xts.resample('M').mean()
     # case_study_mast_monthly_xts = case_study_mast_monthly_xts[case_study_mast_monthly_xts.index <= "2022-12-31 23:59:59"]
@@ -356,7 +355,8 @@ if uploaded_file is not None:
                 label="Télécharger le fichier Excel",
                 data=output,
                 file_name="T&WS-TS.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                key="download_button_1"
             )
 
         if telecharge:
