@@ -60,8 +60,8 @@ st.sidebar.title("INPUTS")
 # afficher hypothèses sur longitude et latitude
 lon_site = st.sidebar.number_input("Longitude (entre 0° et 360°) : ", step=0.1)
 lat_site = st.sidebar.number_input("Latitude", step=0.1) # intervalle ? 
-implementation_date = st.sidebar.text_input("Implementation date (MM/YYYY)")
-lifetime = st.sidebar.number_input("Lifetime (in years)", step=1) 
+implementation_date = st.sidebar.text_input("Commission date (MM/YYYY)")
+lifetime = st.sidebar.number_input("Wind farm lifetime (in years)", step=1) 
 
 #%% Interface
 telecharge = False
@@ -124,6 +124,10 @@ if uploaded_file is not None: # conformité des fichiers ?
     case_study_mast_monthly_xts = case_study_mast_hourly_xts.resample('M').mean()
     # case_study_mast_monthly_xts = case_study_mast_monthly_xts[case_study_mast_monthly_xts.index <= "2022-12-31 23:59:59"]
     case_study_mast_annual_xts = case_study_mast_hourly_xts.resample('A').mean()
+
+    mean_temperature_historical = np.mean(case_study_mast_annual_xts.values)
+    mean_temperature_historical = round(mean_temperature_historical, 2)
+    st.write(f"Mean temperature on past period (from {start_year}-01-01 to {end_year}-12-31) : {mean_temperature_historical}°C")
 
     path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'shrunk_data'))
     #fichiers_data = os.listdir(path_data)
@@ -313,7 +317,7 @@ if uploaded_file is not None: # conformité des fichiers ?
         # extraction température moyenne et la slope
         mean_temperature_extract_value = np.mean(mean_temperature_extract_series.values)
         mean_temperature_extract_value = round(mean_temperature_extract_value, 2)
-        st.write(f"Mean temperature on selected period : {mean_temperature_extract_value}°C")
+        st.write(f"Mean temperature on selected period ((from {implementation_year}-{implementation_month} to str(final_year)}-{implementation_month}) : {mean_temperature_extract_value}°C")
         
         if int(implementation_month) != 1 :
             for_slope_xts = mean_temperature_extract_series[f"{int(implementation_year)+1}-01-01":
@@ -332,7 +336,7 @@ if uploaded_file is not None: # conformité des fichiers ?
             slope_extract = regression_extract.params[1]
 
         slope_extract = round(slope_extract, 2)
-        st.write(f"Annual temperature increase on selected period : {slope_extract}°C/year")
+        st.write(f"Indicative annual average temperature increase on selected period (from {implementation_year}-{implementation_month} to str(final_year)}-{implementation_month}): {slope_extract}°C/year")
         
         wb = Workbook()
         ws = wb.active
