@@ -63,7 +63,8 @@ lat_site = st.sidebar.number_input("Latitude", step=0.1) # intervalle ?
 implementation_date = st.sidebar.text_input("Implementation date (MM/YYYY)") # MM/YYYY as string
 lifetime = st.sidebar.number_input("Lifetime (in years)", step=1) 
 
-# uploading file
+#%% Interface
+telecharge = False
 uploaded_file = st.file_uploader("Choose a file")
 
 if uploaded_file is not None:
@@ -349,8 +350,20 @@ if uploaded_file is not None:
         file_name="T&WS-TS.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
+
+        if not telecharge:
+        telecharge = st.download_button(
+            label="Télécharger le fichier Excel",
+            data=output,
+            file_name="T&WS-TS.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+
+        if telecharge:
+            st.write("Le fichier a été téléchargé. L'exécution du code s'arrête ici.")
     else :
         print("L'année de fin de vie dépasse la période prédite.")    
-        
+
+
 
     
