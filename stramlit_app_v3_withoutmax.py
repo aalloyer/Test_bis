@@ -579,7 +579,9 @@ if uploaded_file is not None: # conformité des fichiers ?
             p = plot_annualcycle(local[index], cmip[index], mean_or_max, historical_or_projected, mean_or_model)
 
     if p !=0 :
-        st.pyplot(p)
+        my_fig = p[0]
+        my_ax = p[1]
+        st.pyplot(my_fig)
 
     
     #%% CMIP TS DOWNLOADING 
