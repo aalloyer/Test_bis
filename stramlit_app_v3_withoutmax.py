@@ -565,7 +565,7 @@ if uploaded_file is not None: # conformité des fichiers ?
         local = dico_local[object_name]
         cmip = dico_global[object_name]
         p = plot_annualcycle(local, cmip, mean_or_max, historical_or_projected, mean_or_model)
-    elif mean_or_model == "model":
+    else :
         if mean_or_max == "max":
             index = model_list_max.index(mean_or_model)
         else :
