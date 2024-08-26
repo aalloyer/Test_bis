@@ -711,10 +711,80 @@ else :
     else :
         plot_annualcycle(local[index], cmip[index], mean_or_max, historical_or_projected, mean_or_model)
 
+#%% CMIP TS DOWNLOADING 
+
+# MEAN 
+
+mean_cmip_tot = []
+
+mean_brut_values = np.concatenate((mean_brut_hist_xts.values, mean_brut_proj_xts.values))
+date = np.concatenate((mean_brut_hist_xts.index, mean_brut_proj_xts.index))
+cmip_mean_xts = pd.Series(mean_brut_values, index =date)
+mean_cmip_tot.append(cmip_mean_xts)
+
+for i in range(len(model_list)):
+    values = np.concatenate(temperature_hist_xts_tot[i].values, 
+                            temperature_proj_xts_tot[i].values)
+    mean_cmip_tot.append(pd.Series(values), index = date)
+    
+# MAX 
+
+max_cmip_tot = []
+
+max_brut_values = np.concatenate((mean_brut_hist_max_xts.values, mean_brut_proj_max_xts.values))
+# date = np.concatenate((mean_brut_hist_max_xts.index, mean_brut_proj_max_xts.index))
+cmip_max_xts = pd.Series(max_brut_values, index =date)
+max_cmip_tot.append(cmip_max_xts)
+
+for i in range(len(model_list_max)):
+    values = np.concatenate(temperature_hist_max_xts_tot[i].values, 
+                            temperature_proj_max_xts_tot[i].values)
+    max_cmip_tot.append(pd.Series(values), index = date)
+
 if st.checkbox('Climate models projected monthly mean temperature TS extraction (Downloading may take time and is not recommended.'):
-    data = pd.read_excel('mon_excel.xlsx')
-    st.download_button(label='Télécharger les données', data=data.to_excel(), file_name='mon_excel.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-  
+    wb = Workbook()
+
+    for i in range(len(model_list)):
+        ws = wb.create_sheet(title=f"{model_list[i]}")
+        data = {
+            "Timestamp" : mean_cmip_tot[i].index,
+            "Temperature [Deg C]": mean_cmip_tot[i].values
+            }
+        df = pd.DataFrame(data)
+        for r in dataframe_to_rows(df, index=False, header=True):
+            ws.append(r)
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    st.download_button(label='Télécharger les données', 
+                       data=output, 
+                       file_name='cmip_mean_TS.xlsx', 
+                       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+
+
+if st.checkbox('Climate models projected monthly max temperature TS extraction (Downloading may take time and is not recommended.'):
+    wb = Workbook()
+
+    for i in range(len(model_list_max)):
+        ws = wb.create_sheet(title=f"{model_list_max[i]}")
+        data = {
+            "Timestamp" : max_cmip_tot[i].index,
+            "Temperature [Deg C]": max_cmip_tot[i].values
+            }
+        df = pd.DataFrame(data)
+        for r in dataframe_to_rows(df, index=False, header=True):
+            ws.append(r)
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    st.download_button(label='Télécharger les données', 
+                       data=output, 
+                       file_name='cmip_max_TS.xlsx', 
+                       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+
 st.stop()
 
     
