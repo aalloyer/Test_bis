@@ -127,7 +127,7 @@ if uploaded_file is not None: # conformité des fichiers ?
 
     mean_temperature_historical = np.mean(case_study_mast_annual_xts.values)
     mean_temperature_historical = round(mean_temperature_historical, 2)
-    st.write(f"Mean temperature on past period (from {start_year}-01-01 to {end_year}-12-31) : {mean_temperature_historical}°C")
+    st.write(f"Mean temperature on past period (from {start_year}-01 to {end_year}-12) : {mean_temperature_historical}°C")
 
     path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'shrunk_data'))
     #fichiers_data = os.listdir(path_data)
