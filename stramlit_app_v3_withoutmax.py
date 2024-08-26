@@ -591,7 +591,7 @@ if uploaded_file is not None: # conformité des fichiers ?
     for i in range(len(model_list)):
         values = np.concatenate((temperature_hist_xts_tot[i].values, 
                                 temperature_proj_xts_tot[i].values))
-        mean_cmip_tot.append(pd.Series(values), index = date)
+        mean_cmip_tot.append(pd.Series(values, index = date))
         
 
     if st.checkbox('Climate models projected monthly mean temperature TS extraction (Downloading may take time and is not recommended.'):
