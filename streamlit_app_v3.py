@@ -368,423 +368,423 @@ if uploaded_file is not None: # conformité des fichiers ?
     else :
         print("L'année de fin de vie dépasse la période prédite.")    
 
-#%% VALIDATION PRESTART - observed data
-
-# TS_DS : on moyenne, prend le max mensuellement
-case_study_mast_monthly_mean_xts = case_study_mast_hourly_xts.resample('M').mean()
-case_study_mast_monthly_max_xts = case_study_mast_hourly_xts.resample('M').max()
-
-output_monthly_mean_xts = mean_temperature_series.resample('M').mean()
-output_monthly_max_xts = mean_temperature_series.resample('M').max()
-
-# regrouper en moyenne cycle annuel
-
-#%% VALIDATION PRSTART - climate data (=undownscaled)
-
-#MEAN
-
-# projection
-mean_brut_proj_values  = np.mean([ts.values for ts in temperature_proj_xts_tot], axis=0)
-mean_brut_proj_xts = pd.Series(mean_brut_proj_values, index =temperature_proj_xts_tot[0].index)
-# temperature_proj_xts_tot.append(mean_brut_proj_xts) 
-del mean_brut_proj_values
-mean_brut_proj_xts = mean_brut_proj_xts[windfarm_start:windfarm_end] # relevant period
-
-
-#historical
-mean_brut_hist_values =  np.mean([ts.values for ts in temperature_hist_xts_tot], axis=0)
-mean_brut_hist_xts = pd.Series(mean_brut_hist_values, index =temperature_hist_xts_tot[0].index)
-# temperature_hist_xts_tot.append(mean_brut_hist_xts) 
-del mean_brut_hist_values
-
-# MAX 
-
-model_list_max = ['cnrm_esm2_1',
-              'fgoals_g3',
-              'gfdl_esm4',
-              'ipsl_cm6a_lr',
-              'mri_esm2_0']
-
-temperature_proj_max_xts_tot = []
-temperature_hist_max_xts_tot = []
-
-for model in model_list_max :
-
-    #CMIP DATA TREATMENT - HISTORICAL 
-    path_cmip_hist_max = f"data/Daily_maximum_near_surface_air_temperature/historical/{model}_historical/"
-    file_hist_max = os.listdir(path_cmip_hist_max)
+    #%% VALIDATION PRESTART - observed data
     
-    with nc.Dataset(f"{path_cmip_hist_max}{file_hist_max[0]}") as nc_hist_max:    
-        temperature_hist_max_xts = nearest_point_cmip_max(lon_=lon_site, lat_=lat_site, nc_input=nc_hist_max)
-        temperature_hist_max_xts = temperature_hist_max_xts - 273.15
-        temperature_hist_max_xts = temperature_hist_max_xts[
+    # TS_DS : on moyenne, prend le max mensuellement
+    case_study_mast_monthly_mean_xts = case_study_mast_hourly_xts.resample('M').mean()
+    case_study_mast_monthly_max_xts = case_study_mast_hourly_xts.resample('M').max()
+    
+    output_monthly_mean_xts = mean_temperature_series.resample('M').mean()
+    output_monthly_max_xts = mean_temperature_series.resample('M').max()
+    
+    # regrouper en moyenne cycle annuel
+    
+    #%% VALIDATION PRSTART - climate data (=undownscaled)
+    
+    #MEAN
+    
+    # projection
+    mean_brut_proj_values  = np.mean([ts.values for ts in temperature_proj_xts_tot], axis=0)
+    mean_brut_proj_xts = pd.Series(mean_brut_proj_values, index =temperature_proj_xts_tot[0].index)
+    # temperature_proj_xts_tot.append(mean_brut_proj_xts) 
+    del mean_brut_proj_values
+    mean_brut_proj_xts = mean_brut_proj_xts[windfarm_start:windfarm_end] # relevant period
+    
+    
+    #historical
+    mean_brut_hist_values =  np.mean([ts.values for ts in temperature_hist_xts_tot], axis=0)
+    mean_brut_hist_xts = pd.Series(mean_brut_hist_values, index =temperature_hist_xts_tot[0].index)
+    # temperature_hist_xts_tot.append(mean_brut_hist_xts) 
+    del mean_brut_hist_values
+    
+    # MAX 
+    
+    model_list_max = ['cnrm_esm2_1',
+                  'fgoals_g3',
+                  'gfdl_esm4',
+                  'ipsl_cm6a_lr',
+                  'mri_esm2_0']
+    
+    temperature_proj_max_xts_tot = []
+    temperature_hist_max_xts_tot = []
+    
+    for model in model_list_max :
+    
+        #CMIP DATA TREATMENT - HISTORICAL 
+        path_cmip_hist_max = f"data/Daily_maximum_near_surface_air_temperature/historical/{model}_historical/"
+        file_hist_max = os.listdir(path_cmip_hist_max)
+        
+        with nc.Dataset(f"{path_cmip_hist_max}{file_hist_max[0]}") as nc_hist_max:    
+            temperature_hist_max_xts = nearest_point_cmip_max(lon_=lon_site, lat_=lat_site, nc_input=nc_hist_max)
+            temperature_hist_max_xts = temperature_hist_max_xts - 273.15
+            temperature_hist_max_xts = temperature_hist_max_xts[
+                case_study_mast_hourly_xts.index[0]: case_study_mast_hourly_xts.index[-1]
+                ]
+        del nc_hist_max, file_hist_max, path_cmip_hist_max
+    
+        path_cmip_proj_max = f"data/Daily_maximum_near_surface_air_temperature/ssp3_7_0/{model}_ssp3_7_0/"
+        file_proj_max =os.listdir(path_cmip_proj_max)
+        with nc.Dataset(f"{path_cmip_proj_max}{file_proj_max[0]}") as nc_proj_max: 
+            temperature_proj_max_xts = nearest_point_cmip_max(lon_=lon_site, lat_=lat_site, nc_input=nc_proj_max)
+            temperature_proj_max_xts = temperature_proj_max_xts - 273.15 
+            temperature_proj_max_xts_tot.append(temperature_proj_max_xts)
+        del nc_proj_max, file_proj_max, path_cmip_proj_max, 
+        
+            # to complete historical time series
+        if end_year > 2014:
+            temperature_hist2_max_xts = temperature_proj_max_xts[
             case_study_mast_hourly_xts.index[0]: case_study_mast_hourly_xts.index[-1]
             ]
-    del nc_hist_max, file_hist_max, path_cmip_hist_max
-
-    path_cmip_proj_max = f"data/Daily_maximum_near_surface_air_temperature/ssp3_7_0/{model}_ssp3_7_0/"
-    file_proj_max =os.listdir(path_cmip_proj_max)
-    with nc.Dataset(f"{path_cmip_proj_max}{file_proj_max[0]}") as nc_proj_max: 
-        temperature_proj_max_xts = nearest_point_cmip_max(lon_=lon_site, lat_=lat_site, nc_input=nc_proj_max)
-        temperature_proj_max_xts = temperature_proj_max_xts - 273.15 
-        temperature_proj_max_xts_tot.append(temperature_proj_max_xts)
-    del nc_proj_max, file_proj_max, path_cmip_proj_max, 
+            new_index_max = np.concatenate((temperature_hist_max_xts.index, temperature_hist2_max_xts.index))
+            new_values_max = np.concatenate((temperature_hist_max_xts.values, temperature_hist2_max_xts.values))
+            temperature_hist_max_xts = pd.Series(new_values_max, index = new_index_max)
+            del temperature_hist2_max_xts, new_index_max, new_values_max
+            
+        temperature_hist_max_xts_tot.append(temperature_hist_max_xts)
+        del temperature_hist_max_xts, temperature_proj_max_xts
     
-        # to complete historical time series
-    if end_year > 2014:
-        temperature_hist2_max_xts = temperature_proj_max_xts[
-        case_study_mast_hourly_xts.index[0]: case_study_mast_hourly_xts.index[-1]
-        ]
-        new_index_max = np.concatenate((temperature_hist_max_xts.index, temperature_hist2_max_xts.index))
-        new_values_max = np.concatenate((temperature_hist_max_xts.values, temperature_hist2_max_xts.values))
-        temperature_hist_max_xts = pd.Series(new_values_max, index = new_index_max)
-        del temperature_hist2_max_xts, new_index_max, new_values_max
+    # On prend la moyenne
+    
+    #proj
+    mean_brut_proj_values_max  = np.mean([ts.values for ts in temperature_proj_max_xts_tot], axis=0)
+    mean_brut_proj_max_xts = pd.Series(mean_brut_proj_values_max, index =temperature_proj_max_xts_tot[0].index)
+    # temperature_proj_max_xts_tot.append(mean_brut_proj_max_xts)
+    
+    mean_brut_proj_max_xts = mean_brut_proj_max_xts[windfarm_start:windfarm_end]
+    
+    # hist
+    mean_brut_hist_values_max  = np.mean([ts.values for ts in temperature_hist_max_xts_tot], axis=0)
+    mean_brut_hist_max_xts = pd.Series(mean_brut_hist_values_max, index =temperature_hist_max_xts_tot[0].index)
+    # temperature_hist_max_xts_tot.append(mean_brut_hist_max_xts)
+    
+    #MEAN VALIDATION - bien vérifier que cest par mois / attention la relevant period est seulement à faire pour projected
+    
+    # LOCAL DATA
+    
+    # HISTORICAL 
+    #case_study_mast_monthly_mean_xts
+    
+    local_historical_mean_df = pd.DataFrame({'month':case_study_mast_monthly_mean_xts.index.month,
+                                             'year': case_study_mast_monthly_mean_xts.index.year,
+                                             'mean_temperature': case_study_mast_monthly_mean_xts.values
+                                             })
+    local_historical_mean_annual_cycle_mean = local_historical_mean_df.groupby('month')['mean_temperature'].mean()
+    del local_historical_mean_df
+    
+    
+    # PROJECTED
+    
+    #output_monthly_mean_xts : MEAN
+    
+    local_projected_mean_df = pd.DataFrame({'month':output_monthly_mean_xts.index.month,
+                                             'year': output_monthly_mean_xts.index.year,
+                                             'mean_temperature': output_monthly_mean_xts.values
+                                             })
+    local_projected_mean_annual_cycle_mean = pd.DataFrame(local_projected_mean_df.groupby('month')['mean_temperature'].mean())
+    del local_projected_mean_df
+    
+    
+    #for each model : 
+    output_all_list_extract_mean = [] # proj for each model 
+    output_all_list_extract_max =[]
+    for series in output_all_list :
+        new_series = series[windfarm_start:windfarm_end]
+        new_series_mean = new_series.resample('M').mean()
+        new_series_max = new_series.resample('M').max()
+        output_all_list_extract_mean.append(new_series_mean)
+        output_all_list_extract_max.append(new_series_max)
+        del series, new_series
+    
+    local_projected_model_annual_cycle_mean = []
+    for series in output_all_list_extract_mean :
+        df =  pd.DataFrame({'month':series.index.month,
+                                                'year': series.index.year,
+                                                'mean_temperature': series.values
+                                                })
+        df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
+        local_projected_model_annual_cycle_mean.append(df_annual_cycle)
+    
+    
+    
+    # CLIMATE DATA 
+    
+    # HISTORICAL
+     
+    # mean_brut_hist_xts: MEAN
+    
+    cmip_historical_mean_df = pd.DataFrame({'month':mean_brut_hist_xts.index.month,
+                                             'year': mean_brut_hist_xts.index.year,
+                                             'mean_temperature': mean_brut_hist_xts.values
+                                             })
+    cmip_historical_mean_annual_cycle_mean = cmip_historical_mean_df.groupby('month')['mean_temperature'].mean()
+    del cmip_historical_mean_df
+    
+    
+    # for each model :
+    # temperature_hist_xts_tot_extract = []
+    # for series in temperature_hist_xts_tot : 
+    #     new_series = series[windfarm_start:windfarm_end]
+    #     temperature_hist_xts_tot_extract.append(new_series)
+    #     del series, new_series
+    
+    cmip_historical_model_annual_cycle_mean = []
+    for series in temperature_hist_xts_tot :
+        df =  pd.DataFrame({'month':series.index.month,
+                                                'year': series.index.year,
+                                                'mean_temperature': series.values
+                                                })
+        df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
+        cmip_historical_model_annual_cycle_mean.append(df_annual_cycle)
+    
+    
+    # PROJECTED
+    
+    # mean_brut_proj_xts : MEAN 
+    
+    cmip_proj_mean_df = pd.DataFrame({'month':mean_brut_proj_xts.index.month,
+                                             'year': mean_brut_proj_xts.index.year,
+                                             'mean_temperature': mean_brut_proj_xts.values
+                                             })
+    cmip_proj_mean_annual_cycle_mean = cmip_proj_mean_df.groupby('month')['mean_temperature'].mean()
+    del cmip_proj_mean_df
+    
+    # for each model :
+    temperature_proj_xts_tot_extract = []
+    for series in temperature_proj_xts_tot : 
+        new_series = series[windfarm_start:windfarm_end]
+        temperature_proj_xts_tot_extract.append(new_series)
+        del series, new_series
+    
+    cmip_projected_model_annual_cycle_mean = []
+    for series in temperature_proj_xts_tot_extract :
+        df =  pd.DataFrame({'month':series.index.month,
+                                                'year': series.index.year,
+                                                'mean_temperature': series.values
+                                                })
+        df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
+        cmip_projected_model_annual_cycle_mean.append(df_annual_cycle)
         
-    temperature_hist_max_xts_tot.append(temperature_hist_max_xts)
-    del temperature_hist_max_xts, temperature_proj_max_xts
-
-# On prend la moyenne
-
-#proj
-mean_brut_proj_values_max  = np.mean([ts.values for ts in temperature_proj_max_xts_tot], axis=0)
-mean_brut_proj_max_xts = pd.Series(mean_brut_proj_values_max, index =temperature_proj_max_xts_tot[0].index)
-# temperature_proj_max_xts_tot.append(mean_brut_proj_max_xts)
-
-mean_brut_proj_max_xts = mean_brut_proj_max_xts[windfarm_start:windfarm_end]
-
-# hist
-mean_brut_hist_values_max  = np.mean([ts.values for ts in temperature_hist_max_xts_tot], axis=0)
-mean_brut_hist_max_xts = pd.Series(mean_brut_hist_values_max, index =temperature_hist_max_xts_tot[0].index)
-# temperature_hist_max_xts_tot.append(mean_brut_hist_max_xts)
-
-#MEAN VALIDATION - bien vérifier que cest par mois / attention la relevant period est seulement à faire pour projected
-
-# LOCAL DATA
-
-# HISTORICAL 
-#case_study_mast_monthly_mean_xts
-
-local_historical_mean_df = pd.DataFrame({'month':case_study_mast_monthly_mean_xts.index.month,
-                                         'year': case_study_mast_monthly_mean_xts.index.year,
-                                         'mean_temperature': case_study_mast_monthly_mean_xts.values
-                                         })
-local_historical_mean_annual_cycle_mean = local_historical_mean_df.groupby('month')['mean_temperature'].mean()
-del local_historical_mean_df
-
-
-# PROJECTED
-
-#output_monthly_mean_xts : MEAN
-
-local_projected_mean_df = pd.DataFrame({'month':output_monthly_mean_xts.index.month,
-                                         'year': output_monthly_mean_xts.index.year,
-                                         'mean_temperature': output_monthly_mean_xts.values
-                                         })
-local_projected_mean_annual_cycle_mean = pd.DataFrame(local_projected_mean_df.groupby('month')['mean_temperature'].mean())
-del local_projected_mean_df
-
-
-#for each model : 
-output_all_list_extract_mean = [] # proj for each model 
-output_all_list_extract_max =[]
-for series in output_all_list :
-    new_series = series[windfarm_start:windfarm_end]
-    new_series_mean = new_series.resample('M').mean()
-    new_series_max = new_series.resample('M').max()
-    output_all_list_extract_mean.append(new_series_mean)
-    output_all_list_extract_max.append(new_series_max)
-    del series, new_series
-
-local_projected_model_annual_cycle_mean = []
-for series in output_all_list_extract_mean :
-    df =  pd.DataFrame({'month':series.index.month,
-                                            'year': series.index.year,
-                                            'mean_temperature': series.values
-                                            })
-    df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
-    local_projected_model_annual_cycle_mean.append(df_annual_cycle)
-
-
-
-# CLIMATE DATA 
-
-# HISTORICAL
- 
-# mean_brut_hist_xts: MEAN
-
-cmip_historical_mean_df = pd.DataFrame({'month':mean_brut_hist_xts.index.month,
-                                         'year': mean_brut_hist_xts.index.year,
-                                         'mean_temperature': mean_brut_hist_xts.values
-                                         })
-cmip_historical_mean_annual_cycle_mean = cmip_historical_mean_df.groupby('month')['mean_temperature'].mean()
-del cmip_historical_mean_df
-
-
-# for each model :
-# temperature_hist_xts_tot_extract = []
-# for series in temperature_hist_xts_tot : 
-#     new_series = series[windfarm_start:windfarm_end]
-#     temperature_hist_xts_tot_extract.append(new_series)
-#     del series, new_series
-
-cmip_historical_model_annual_cycle_mean = []
-for series in temperature_hist_xts_tot :
-    df =  pd.DataFrame({'month':series.index.month,
-                                            'year': series.index.year,
-                                            'mean_temperature': series.values
-                                            })
-    df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
-    cmip_historical_model_annual_cycle_mean.append(df_annual_cycle)
-
-
-# PROJECTED
-
-# mean_brut_proj_xts : MEAN 
-
-cmip_proj_mean_df = pd.DataFrame({'month':mean_brut_proj_xts.index.month,
-                                         'year': mean_brut_proj_xts.index.year,
-                                         'mean_temperature': mean_brut_proj_xts.values
-                                         })
-cmip_proj_mean_annual_cycle_mean = cmip_proj_mean_df.groupby('month')['mean_temperature'].mean()
-del cmip_proj_mean_df
-
-# for each model :
-temperature_proj_xts_tot_extract = []
-for series in temperature_proj_xts_tot : 
-    new_series = series[windfarm_start:windfarm_end]
-    temperature_proj_xts_tot_extract.append(new_series)
-    del series, new_series
-
-cmip_projected_model_annual_cycle_mean = []
-for series in temperature_proj_xts_tot_extract :
-    df =  pd.DataFrame({'month':series.index.month,
-                                            'year': series.index.year,
-                                            'mean_temperature': series.values
-                                            })
-    df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
-    cmip_projected_model_annual_cycle_mean.append(df_annual_cycle)
     
-
-#%% MAX VALIDATION
-
-# LOCAL DATA 
-
-# HISTORICAL :
-# case_study_mast_monthly_max_xts
-
-local_historical_max_df = pd.DataFrame({'month':case_study_mast_monthly_max_xts.index.month,
-                                         'year': case_study_mast_monthly_max_xts.index.year,
-                                         'mean_temperature': case_study_mast_monthly_max_xts.values
-                                         })
-local_historical_max_annual_cycle_mean = local_historical_max_df.groupby('month')['mean_temperature'].mean()
-del local_historical_max_df
-
-# PROJECTED
-# output_monthly_max_xts : MEAN
-
-local_projected_mean_df_max = pd.DataFrame({'month':output_monthly_max_xts.index.month,
-                                         'year': output_monthly_max_xts.index.year,
-                                         'mean_temperature': output_monthly_max_xts.values
-                                         })
-local_projected_mean_annual_cycle_max = pd.DataFrame(local_projected_mean_df_max.groupby('month')['mean_temperature'].mean())
-del local_projected_mean_df_max
-
-
-# for each model : output_all_list_extract_max
-
-local_projected_model_annual_cycle_max = []
-for series in output_all_list_extract_max :
-    df =  pd.DataFrame({'month':series.index.month,
-                                            'year': series.index.year,
-                                            'mean_temperature': series.values
-                                            })
-    df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
-    local_projected_model_annual_cycle_max.append(df_annual_cycle)
-
-# CLIMATE DATA 
-
-# HISTORICAL :
+    #%% MAX VALIDATION
     
-# mean_brut_hist_max_xts : MEAN
-
-cmip_historical_mean_df_max = pd.DataFrame({'month':mean_brut_hist_max_xts.index.month,
-                                         'year': mean_brut_hist_max_xts.index.year,
-                                         'mean_temperature': mean_brut_hist_max_xts.values
-                                         })
-cmip_historical_mean_annual_cycle_max = cmip_historical_mean_df_max.groupby('month')['mean_temperature'].mean()
-del cmip_historical_mean_df_max
-
-# for each model :
-cmip_historical_model_annual_cycle_max = []
-for series in temperature_hist_max_xts_tot :
-    df =  pd.DataFrame({'month':series.index.month,
-                                            'year': series.index.year,
-                                            'mean_temperature': series.values
-                                            })
-    df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
-    cmip_historical_model_annual_cycle_max.append(df_annual_cycle)
-
-# PROJECTED
-
-# mean_brut_proj_max_xts : MEAN
-
-cmip_proj_mean_df_max = pd.DataFrame({'month':mean_brut_proj_max_xts.index.month,
-                                         'year': mean_brut_proj_max_xts.index.year,
-                                         'mean_temperature': mean_brut_proj_max_xts.values
-                                         })
-cmip_proj_mean_annual_cycle_max = cmip_proj_mean_df_max.groupby('month')['mean_temperature'].mean()
-del cmip_proj_mean_df_max
-
-#for each model :
-temperature_proj_max_xts_tot_extract= []
-for series in temperature_proj_max_xts_tot :
-    new_series =series[windfarm_start:windfarm_end]
-    temperature_proj_max_xts_tot_extract.append(new_series)
-    del series, new_series
-
-cmip_projected_model_annual_cycle_max = []
-for series in temperature_proj_max_xts_tot_extract :
-    df =  pd.DataFrame({'month':series.index.month,
-                                            'year': series.index.year,
-                                            'mean_temperature': series.values
-                                            })
-    df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
-    cmip_projected_model_annual_cycle_max.append(df_annual_cycle)
-
-#%% PLOT
-
-dico_local = {
-    'mean_historical_mean' :local_historical_mean_annual_cycle_mean,
-    'mean_historical_model' : local_historical_mean_annual_cycle_mean,
-    'mean_projected_mean': local_projected_mean_annual_cycle_mean,
-    'mean_projected_model':local_projected_model_annual_cycle_mean,
-    'max_historical_mean' :local_historical_max_annual_cycle_mean,
-    'max_historical_model': local_historical_max_annual_cycle_mean,
-    'max_projected_mean':local_projected_mean_annual_cycle_max,
-    'max_projected_model':local_projected_model_annual_cycle_max}
-
-dico_global = {
-    'mean_historical_mean' : cmip_historical_mean_annual_cycle_mean,
-    'mean_historical_model' : cmip_historical_model_annual_cycle_mean,
-    'mean_projected_mean': cmip_proj_mean_annual_cycle_mean,
-    'mean_projected_model':cmip_projected_model_annual_cycle_mean,
-    'max_historical_mean' :cmip_historical_mean_annual_cycle_max,
-    'max_historical_model': cmip_historical_model_annual_cycle_max,
-    'max_projected_mean':cmip_proj_mean_annual_cycle_max,
-    'max_projected_model':cmip_projected_model_annual_cycle_max}
-
-model_list_max = ['cnrm_esm2_1',
-              'fgoals_g3',
-              'gfdl_esm4',
-              'ipsl_cm6a_lr',
-              'mri_esm2_0']
-
-model_list = ['bcc_csm2_mr',
-              'cnrm_esm2_1',
-              'fgoals_g3',
-              'gfdl_esm4',
-              'ipsl_cm6a_lr',
-              'mri_esm2_0']
-
-mean_or_max = st.selectbox('Mean ou Max ?', ['mean', 'max'])
-historical_or_projected = st.selectbox('Historical ou Projected ?', ['historical', 'projected'])
-mean_or_model = st.selectbox('Mean ou Model ?', ['mean', 'bcc_csm2_mr', 'cnrm_esm2_1','fgoals_g3','gfdl_esm4','ipsl_cm6a_lr','mri_esm2_0'])
-
-# attention si = "max" et que = au model qu'il n'y a pas
-if (mean_or_max == "max") and (mean_or_model == "bcc_csm2_mr") :
-  st.write("Le modèle bcc_csm2_mr ne fournit pas de données de température maximale.")
-elif mean_or_model == "mean":
-    object_name = f"{mean_or_max}_{historical_or_projected}_{mean_or_model}"
-    local = dico_local[object_name]
-    cmip = dico_global[object_name]
-    plot_annualcycle(local, cmip, mean_or_max, historical_or_projected, mean_or_model)
-else :
-    if mean_or_max == "max":
-        index = model_list_max.index(mean_or_model)
+    # LOCAL DATA 
+    
+    # HISTORICAL :
+    # case_study_mast_monthly_max_xts
+    
+    local_historical_max_df = pd.DataFrame({'month':case_study_mast_monthly_max_xts.index.month,
+                                             'year': case_study_mast_monthly_max_xts.index.year,
+                                             'mean_temperature': case_study_mast_monthly_max_xts.values
+                                             })
+    local_historical_max_annual_cycle_mean = local_historical_max_df.groupby('month')['mean_temperature'].mean()
+    del local_historical_max_df
+    
+    # PROJECTED
+    # output_monthly_max_xts : MEAN
+    
+    local_projected_mean_df_max = pd.DataFrame({'month':output_monthly_max_xts.index.month,
+                                             'year': output_monthly_max_xts.index.year,
+                                             'mean_temperature': output_monthly_max_xts.values
+                                             })
+    local_projected_mean_annual_cycle_max = pd.DataFrame(local_projected_mean_df_max.groupby('month')['mean_temperature'].mean())
+    del local_projected_mean_df_max
+    
+    
+    # for each model : output_all_list_extract_max
+    
+    local_projected_model_annual_cycle_max = []
+    for series in output_all_list_extract_max :
+        df =  pd.DataFrame({'month':series.index.month,
+                                                'year': series.index.year,
+                                                'mean_temperature': series.values
+                                                })
+        df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
+        local_projected_model_annual_cycle_max.append(df_annual_cycle)
+    
+    # CLIMATE DATA 
+    
+    # HISTORICAL :
+        
+    # mean_brut_hist_max_xts : MEAN
+    
+    cmip_historical_mean_df_max = pd.DataFrame({'month':mean_brut_hist_max_xts.index.month,
+                                             'year': mean_brut_hist_max_xts.index.year,
+                                             'mean_temperature': mean_brut_hist_max_xts.values
+                                             })
+    cmip_historical_mean_annual_cycle_max = cmip_historical_mean_df_max.groupby('month')['mean_temperature'].mean()
+    del cmip_historical_mean_df_max
+    
+    # for each model :
+    cmip_historical_model_annual_cycle_max = []
+    for series in temperature_hist_max_xts_tot :
+        df =  pd.DataFrame({'month':series.index.month,
+                                                'year': series.index.year,
+                                                'mean_temperature': series.values
+                                                })
+        df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
+        cmip_historical_model_annual_cycle_max.append(df_annual_cycle)
+    
+    # PROJECTED
+    
+    # mean_brut_proj_max_xts : MEAN
+    
+    cmip_proj_mean_df_max = pd.DataFrame({'month':mean_brut_proj_max_xts.index.month,
+                                             'year': mean_brut_proj_max_xts.index.year,
+                                             'mean_temperature': mean_brut_proj_max_xts.values
+                                             })
+    cmip_proj_mean_annual_cycle_max = cmip_proj_mean_df_max.groupby('month')['mean_temperature'].mean()
+    del cmip_proj_mean_df_max
+    
+    #for each model :
+    temperature_proj_max_xts_tot_extract= []
+    for series in temperature_proj_max_xts_tot :
+        new_series =series[windfarm_start:windfarm_end]
+        temperature_proj_max_xts_tot_extract.append(new_series)
+        del series, new_series
+    
+    cmip_projected_model_annual_cycle_max = []
+    for series in temperature_proj_max_xts_tot_extract :
+        df =  pd.DataFrame({'month':series.index.month,
+                                                'year': series.index.year,
+                                                'mean_temperature': series.values
+                                                })
+        df_annual_cycle = pd.DataFrame(df.groupby('month')['mean_temperature'].mean())
+        cmip_projected_model_annual_cycle_max.append(df_annual_cycle)
+    
+    #%% PLOT
+    
+    dico_local = {
+        'mean_historical_mean' :local_historical_mean_annual_cycle_mean,
+        'mean_historical_model' : local_historical_mean_annual_cycle_mean,
+        'mean_projected_mean': local_projected_mean_annual_cycle_mean,
+        'mean_projected_model':local_projected_model_annual_cycle_mean,
+        'max_historical_mean' :local_historical_max_annual_cycle_mean,
+        'max_historical_model': local_historical_max_annual_cycle_mean,
+        'max_projected_mean':local_projected_mean_annual_cycle_max,
+        'max_projected_model':local_projected_model_annual_cycle_max}
+    
+    dico_global = {
+        'mean_historical_mean' : cmip_historical_mean_annual_cycle_mean,
+        'mean_historical_model' : cmip_historical_model_annual_cycle_mean,
+        'mean_projected_mean': cmip_proj_mean_annual_cycle_mean,
+        'mean_projected_model':cmip_projected_model_annual_cycle_mean,
+        'max_historical_mean' :cmip_historical_mean_annual_cycle_max,
+        'max_historical_model': cmip_historical_model_annual_cycle_max,
+        'max_projected_mean':cmip_proj_mean_annual_cycle_max,
+        'max_projected_model':cmip_projected_model_annual_cycle_max}
+    
+    model_list_max = ['cnrm_esm2_1',
+                  'fgoals_g3',
+                  'gfdl_esm4',
+                  'ipsl_cm6a_lr',
+                  'mri_esm2_0']
+    
+    model_list = ['bcc_csm2_mr',
+                  'cnrm_esm2_1',
+                  'fgoals_g3',
+                  'gfdl_esm4',
+                  'ipsl_cm6a_lr',
+                  'mri_esm2_0']
+    
+    mean_or_max = st.selectbox('Mean ou Max ?', ['mean', 'max'])
+    historical_or_projected = st.selectbox('Historical ou Projected ?', ['historical', 'projected'])
+    mean_or_model = st.selectbox('Mean ou Model ?', ['mean', 'bcc_csm2_mr', 'cnrm_esm2_1','fgoals_g3','gfdl_esm4','ipsl_cm6a_lr','mri_esm2_0'])
+    
+    # attention si = "max" et que = au model qu'il n'y a pas
+    if (mean_or_max == "max") and (mean_or_model == "bcc_csm2_mr") :
+      st.write("Le modèle bcc_csm2_mr ne fournit pas de données de température maximale.")
+    elif mean_or_model == "mean":
+        object_name = f"{mean_or_max}_{historical_or_projected}_{mean_or_model}"
+        local = dico_local[object_name]
+        cmip = dico_global[object_name]
+        plot_annualcycle(local, cmip, mean_or_max, historical_or_projected, mean_or_model)
     else :
-        index = model_list.index(mean_or_model)
-    object_name = f"{mean_or_max}_{historical_or_projected}_model"
-    local = dico_local[object_name] 
-    cmip = dico_global[object_name] # pq c'est qu'une liste
-    if len(local) == 12 :
-        plot_annualcycle(local, cmip[index], mean_or_max, historical_or_projected, mean_or_model)
-    else :
-        plot_annualcycle(local[index], cmip[index], mean_or_max, historical_or_projected, mean_or_model)
-
-#%% CMIP TS DOWNLOADING 
-
-# MEAN 
-
-mean_cmip_tot = []
-
-mean_brut_values = np.concatenate((mean_brut_hist_xts.values, mean_brut_proj_xts.values))
-date = np.concatenate((mean_brut_hist_xts.index, mean_brut_proj_xts.index))
-cmip_mean_xts = pd.Series(mean_brut_values, index =date)
-mean_cmip_tot.append(cmip_mean_xts)
-
-for i in range(len(model_list)):
-    values = np.concatenate(temperature_hist_xts_tot[i].values, 
-                            temperature_proj_xts_tot[i].values)
-    mean_cmip_tot.append(pd.Series(values), index = date)
+        if mean_or_max == "max":
+            index = model_list_max.index(mean_or_model)
+        else :
+            index = model_list.index(mean_or_model)
+        object_name = f"{mean_or_max}_{historical_or_projected}_model"
+        local = dico_local[object_name] 
+        cmip = dico_global[object_name] # pq c'est qu'une liste
+        if len(local) == 12 :
+            plot_annualcycle(local, cmip[index], mean_or_max, historical_or_projected, mean_or_model)
+        else :
+            plot_annualcycle(local[index], cmip[index], mean_or_max, historical_or_projected, mean_or_model)
     
-# MAX 
-
-max_cmip_tot = []
-
-max_brut_values = np.concatenate((mean_brut_hist_max_xts.values, mean_brut_proj_max_xts.values))
-# date = np.concatenate((mean_brut_hist_max_xts.index, mean_brut_proj_max_xts.index))
-cmip_max_xts = pd.Series(max_brut_values, index =date)
-max_cmip_tot.append(cmip_max_xts)
-
-for i in range(len(model_list_max)):
-    values = np.concatenate(temperature_hist_max_xts_tot[i].values, 
-                            temperature_proj_max_xts_tot[i].values)
-    max_cmip_tot.append(pd.Series(values), index = date)
-
-if st.checkbox('Climate models projected monthly mean temperature TS extraction (Downloading may take time and is not recommended.'):
-    wb = Workbook()
-
+    #%% CMIP TS DOWNLOADING 
+    
+    # MEAN 
+    
+    mean_cmip_tot = []
+    
+    mean_brut_values = np.concatenate((mean_brut_hist_xts.values, mean_brut_proj_xts.values))
+    date = np.concatenate((mean_brut_hist_xts.index, mean_brut_proj_xts.index))
+    cmip_mean_xts = pd.Series(mean_brut_values, index =date)
+    mean_cmip_tot.append(cmip_mean_xts)
+    
     for i in range(len(model_list)):
-        ws = wb.create_sheet(title=f"{model_list[i]}")
-        data = {
-            "Timestamp" : mean_cmip_tot[i].index,
-            "Temperature [Deg C]": mean_cmip_tot[i].values
-            }
-        df = pd.DataFrame(data)
-        for r in dataframe_to_rows(df, index=False, header=True):
-            ws.append(r)
-    output = BytesIO()
-    wb.save(output)
-    output.seek(0)
-    st.download_button(label='Télécharger les données', 
-                       data=output, 
-                       file_name='cmip_mean_TS.xlsx', 
-                       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-
-
-
-if st.checkbox('Climate models projected monthly max temperature TS extraction (Downloading may take time and is not recommended.'):
-    wb = Workbook()
-
-    for i in range(len(model_list_max)):
-        ws = wb.create_sheet(title=f"{model_list_max[i]}")
-        data = {
-            "Timestamp" : max_cmip_tot[i].index,
-            "Temperature [Deg C]": max_cmip_tot[i].values
-            }
-        df = pd.DataFrame(data)
-        for r in dataframe_to_rows(df, index=False, header=True):
-            ws.append(r)
-
-    output = BytesIO()
-    wb.save(output)
-    output.seek(0)
-    st.download_button(label='Télécharger les données', 
-                       data=output, 
-                       file_name='cmip_max_TS.xlsx', 
-                       mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-
-
-st.stop()
-
+        values = np.concatenate(temperature_hist_xts_tot[i].values, 
+                                temperature_proj_xts_tot[i].values)
+        mean_cmip_tot.append(pd.Series(values), index = date)
+        
+    # MAX 
     
+    max_cmip_tot = []
+    
+    max_brut_values = np.concatenate((mean_brut_hist_max_xts.values, mean_brut_proj_max_xts.values))
+    # date = np.concatenate((mean_brut_hist_max_xts.index, mean_brut_proj_max_xts.index))
+    cmip_max_xts = pd.Series(max_brut_values, index =date)
+    max_cmip_tot.append(cmip_max_xts)
+    
+    for i in range(len(model_list_max)):
+        values = np.concatenate(temperature_hist_max_xts_tot[i].values, 
+                                temperature_proj_max_xts_tot[i].values)
+        max_cmip_tot.append(pd.Series(values), index = date)
+    
+    if st.checkbox('Climate models projected monthly mean temperature TS extraction (Downloading may take time and is not recommended.'):
+        wb = Workbook()
+    
+        for i in range(len(model_list)):
+            ws = wb.create_sheet(title=f"{model_list[i]}")
+            data = {
+                "Timestamp" : mean_cmip_tot[i].index,
+                "Temperature [Deg C]": mean_cmip_tot[i].values
+                }
+            df = pd.DataFrame(data)
+            for r in dataframe_to_rows(df, index=False, header=True):
+                ws.append(r)
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+        st.download_button(label='Télécharger les données', 
+                           data=output, 
+                           file_name='cmip_mean_TS.xlsx', 
+                           mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    
+    
+    
+    if st.checkbox('Climate models projected monthly max temperature TS extraction (Downloading may take time and is not recommended.'):
+        wb = Workbook()
+    
+        for i in range(len(model_list_max)):
+            ws = wb.create_sheet(title=f"{model_list_max[i]}")
+            data = {
+                "Timestamp" : max_cmip_tot[i].index,
+                "Temperature [Deg C]": max_cmip_tot[i].values
+                }
+            df = pd.DataFrame(data)
+            for r in dataframe_to_rows(df, index=False, header=True):
+                ws.append(r)
+    
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+        st.download_button(label='Télécharger les données', 
+                           data=output, 
+                           file_name='cmip_max_TS.xlsx', 
+                           mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    
+    
+    st.stop()
+    
+        
