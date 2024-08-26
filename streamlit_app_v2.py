@@ -369,6 +369,11 @@ if uploaded_file is not None: # conformité des fichiers ?
         print("L'année de fin de vie dépasse la période prédite.")    
 
 #%% PLOT 
+mean_or_max = st.selectbox('Mean ou Max ?', ['mean', 'max'])
+historical_or_projected = st.selectbox('Historical ou Projected ?', ['historical', 'projected'])
+mean_or_model = st.selectbox('Mean ou Model ?', ['mean', 'model'])
+
+object_name = f"{historical_or_projected}_{mean_or_model}__{mean_or_max}"
 
 st.stop()
 
