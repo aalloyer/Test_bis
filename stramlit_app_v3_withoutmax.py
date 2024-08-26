@@ -593,12 +593,19 @@ if uploaded_file is not None: # conformité des fichiers ?
         values = np.concatenate((temperature_hist_xts_tot[i].values, 
                                 new_proj.values))
         mean_cmip_tot.append(pd.Series(values, index = date))
-    
+
+    model_list = ['mean',
+                  'bcc_csm2_mr',
+                  'cnrm_esm2_1',
+                  'fgoals_g3',
+                  'gfdl_esm4',
+                  'ipsl_cm6a_lr',
+                  'mri_esm2_0']
 
     if st.checkbox('Climate models projected monthly mean temperature TS extraction (Downloading may take time and is not recommended.'):
         wb = Workbook()
     
-        for i in range(len(model_list)):
+        for i in range():
             ws = wb.create_sheet(title=f"{model_list[i]}")
             data = {
                 "Timestamp" : mean_cmip_tot[i].index,
