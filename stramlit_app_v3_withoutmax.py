@@ -589,8 +589,8 @@ if uploaded_file is not None: # conformité des fichiers ?
     mean_cmip_tot.append(cmip_mean_xts)
     
     for i in range(len(model_list)):
-        values = np.concatenate(temperature_hist_xts_tot[i].values, 
-                                temperature_proj_xts_tot[i].values)
+        values = np.concatenate((temperature_hist_xts_tot[i].values, 
+                                temperature_proj_xts_tot[i].values))
         mean_cmip_tot.append(pd.Series(values), index = date)
         
 
