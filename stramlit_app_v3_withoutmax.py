@@ -70,7 +70,7 @@ st.sidebar.title("INPUTS")
 
 # afficher hypothèses sur longitude et latitude
 lon_site = st.sidebar.number_input("Longitude (from 0° to 360°) : ", step=0.1)
-lat_site = st.sidebar.number_input("Latitude (from -90° [south] to 90° [north] ", step=0.1) # intervalle ? 
+lat_site = st.sidebar.number_input("Latitude (from -90° [south] to 90° [north])", step=0.1) # intervalle ? 
 implementation_date = st.sidebar.text_input("Commission date (MM/YYYY)")
 lifetime = st.sidebar.number_input("Wind farm lifetime (in years)", step=1) 
 
