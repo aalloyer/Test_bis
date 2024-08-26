@@ -140,7 +140,33 @@ if uploaded_file is not None: # conformité des fichiers ?
                   'ipsl_cm6a_lr',
                   'mri_esm2_0']
     output_tot =[]
+    temperature_hist_xts_tot = []
+    temperature_proj_xts_tot = []
+    regression_df_tot =[]
+
+    duration = case_study_mast_hourly_xts.index[-1] - case_study_mast_hourly_xts.index[0] + pd.Timedelta(hours=1)
+    period_proj_1 = case_study_mast_hourly_xts.index + duration
+    period_proj_2 = case_study_mast_hourly_xts.index + 2*duration
+    period_proj_3 = case_study_mast_hourly_xts.index + 3*duration
+
+    years_hist = case_study_mast_annual_xts.index.year
+    X_hist =sm.add_constant(years_hist)
+    regression_hist = sm.OLS(case_study_mast_annual_xts, X_hist).fit()
+    slope_hist = regression_hist.params[1]
+    r2_hist = regression_hist.rsquared
+    regression_hist = [slope_hist,
+                       r2_hist]
+
+    del duration, X_hist
+    index_count = 0
+    flat_data = case_study_mast_hourly_xts.values.copy()
     
+    for year in years_hist :
+        hours_in_year =  len(pd.date_range(start=f"{year}-01-01 00:00:00", end=f"{year}-12-31 23:00:00", freq='H'))
+        for hour in range(0, hours_in_year):
+            flat_data[index_count] = case_study_mast_hourly_xts.values[index_count] - slope_hist*(year + hour/hours_in_year - start_year)
+            index_count =  index_count + 1
+    del hour, year, hours_in_year
     
     for model in model_list :
             
@@ -162,8 +188,11 @@ if uploaded_file is not None: # conformité des fichiers ?
             nc_proj = nc.Dataset(f"{path_cmip_proj}{file_proj[0]}")
             
             temperature_proj_xts = nearest_point_cmip(lon_=lon_site, lat_=lat_site, nc_input=nc_proj)
-            temperature_proj_xts = temperature_proj_xts - 273.15 
-            
+            temperature_proj_xts = temperature_proj_xts - 273.15
+            temperature_proj_xts_tot.append(temperature_proj_xts)
+
+
+        
             # to complete historical time series
             if end_year > 2014:
                 temperature_hist2_xts = temperature_proj_xts[
@@ -173,11 +202,8 @@ if uploaded_file is not None: # conformité des fichiers ?
                 new_values = np.concatenate((temperature_hist_xts.values, temperature_hist2_xts.values))
                 temperature_hist_xts = pd.Series(new_values, index = new_index)
             
-            # to take projected proj
-            duration = case_study_mast_hourly_xts.index[-1] - case_study_mast_hourly_xts.index[0] + pd.Timedelta(hours=1)
-            period_proj_1 = case_study_mast_hourly_xts.index + duration
-            period_proj_2 = case_study_mast_hourly_xts.index + 2*duration
-            period_proj_3 = case_study_mast_hourly_xts.index + 3*duration
+            temperature_hist_xts_tot.append(temperature_hist_xts) 
+
             
             # ATTENTION AUX HEURES - ok car données horaires
             #to take projected proj time series
@@ -219,23 +245,6 @@ if uploaded_file is not None: # conformité des fichiers ?
             
             regression_df = pd.DataFrame(regression_list, columns=['slope', 'r2'], index=['period_proj_1', 'period_proj_2', 'period_proj_3'])
             
-            # Past
-            years_hist = case_study_mast_annual_xts.index.year
-            X_hist =sm.add_constant(years_hist)
-            regression_hist = sm.OLS(case_study_mast_annual_xts, X_hist).fit()
-            slope_hist = regression_hist.params[1]
-            r2_hist = regression_hist.rsquared
-            
-            
-            index_count = 0
-            flat_data = case_study_mast_hourly_xts.values.copy()
-            # Attention gros problème car modification des premières données de case_study_mast_hourly_xts.values
-            
-            for year in years_hist :
-                hours_in_year =  len(pd.date_range(start=f"{year}-01-01 00:00:00", end=f"{year}-12-31 23:00:00", freq='H'))
-                for hour in range(0, hours_in_year):
-                    flat_data[index_count] = case_study_mast_hourly_xts.values[index_count] - slope_hist*(year + hour/hours_in_year - start_year)
-                    index_count =  index_count + 1
             
             # hours_in_end_year = len(pd.date_range(start=f"{end_year}-01-01 00:00:00", end=f"{end_year}-12-31 23:00:00", freq='H'))
             offset_hist = slope_hist * (end_year - start_year + 1) # pas un bon offset # en relatif
