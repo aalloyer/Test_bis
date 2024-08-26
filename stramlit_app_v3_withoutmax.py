@@ -69,8 +69,8 @@ def plot_annualcycle(local_annual_cycle, cmip_annual_cycle, mean_or_max, period,
 st.sidebar.title("INPUTS")
 
 # afficher hypothèses sur longitude et latitude
-lon_site = st.sidebar.number_input("Longitude (entre 0° et 360°) : ", step=0.1)
-lat_site = st.sidebar.number_input("Latitude", step=0.1) # intervalle ? 
+lon_site = st.sidebar.number_input("Longitude (from 0° to 360°) : ", step=0.1)
+lat_site = st.sidebar.number_input("Latitude (from -90° [south] to 90° [north] ", step=0.1) # intervalle ? 
 implementation_date = st.sidebar.text_input("Commission date (MM/YYYY)")
 lifetime = st.sidebar.number_input("Wind farm lifetime (in years)", step=1) 
 
@@ -579,7 +579,7 @@ if uploaded_file is not None: # conformité des fichiers ?
             p = plot_annualcycle(local[index], cmip[index], mean_or_max, historical_or_projected, mean_or_model)
 
     if p !=0 :
-        st.pyplot(p[0])
+        st.pyplot(p)
 
     
     #%% CMIP TS DOWNLOADING 
