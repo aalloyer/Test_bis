@@ -368,6 +368,8 @@ if uploaded_file is not None: # conformité des fichiers ?
     else :
         print("L'année de fin de vie dépasse la période prédite.")    
 
+#%% PLOT 
+
 st.stop()
 
     
