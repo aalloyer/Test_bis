@@ -552,9 +552,10 @@ if uploaded_file is not None: # conformité des fichiers ?
                   'ipsl_cm6a_lr',
                   'mri_esm2_0']
     
-    mean_or_max = st.selectbox('Mean ou Max ?', ['mean', 'max'])
-    historical_or_projected = st.selectbox('Historical ou Projected ?', ['historical', 'projected'])
-    mean_or_model = st.selectbox('Mean ou Model ?', ['mean', 'bcc_csm2_mr', 'cnrm_esm2_1','fgoals_g3','gfdl_esm4','ipsl_cm6a_lr','mri_esm2_0'])
+    mean_or_max = st.selectbox('Mean ou Max ?', ['','mean', 'max'])
+    historical_or_projected = st.selectbox('Historical ou Projected ?', ['','historical', 'projected'])
+    mean_or_model = st.selectbox('Mean ou Model ?', ['','mean', 'bcc_csm2_mr', 'cnrm_esm2_1','fgoals_g3','gfdl_esm4','ipsl_cm6a_lr','mri_esm2_0'])
+    p = 0
     
     # attention si = "max" et que = au model qu'il n'y a pas
     if (mean_or_max == "max") and (mean_or_model == "bcc_csm2_mr") :
@@ -563,8 +564,8 @@ if uploaded_file is not None: # conformité des fichiers ?
         object_name = f"{mean_or_max}_{historical_or_projected}_{mean_or_model}"
         local = dico_local[object_name]
         cmip = dico_global[object_name]
-        plot_annualcycle(local, cmip, mean_or_max, historical_or_projected, mean_or_model)
-    else :
+        p = plot_annualcycle(local, cmip, mean_or_max, historical_or_projected, mean_or_model)
+    elif mean_or_model == "model":
         if mean_or_max == "max":
             index = model_list_max.index(mean_or_model)
         else :
@@ -573,9 +574,13 @@ if uploaded_file is not None: # conformité des fichiers ?
         local = dico_local[object_name] 
         cmip = dico_global[object_name] # pq c'est qu'une liste
         if len(local) == 12 :
-            plot_annualcycle(local, cmip[index], mean_or_max, historical_or_projected, mean_or_model)
+            p = plot_annualcycle(local, cmip[index], mean_or_max, historical_or_projected, mean_or_model)
         else :
-            plot_annualcycle(local[index], cmip[index], mean_or_max, historical_or_projected, mean_or_model)
+            p = plot_annualcycle(local[index], cmip[index], mean_or_max, historical_or_projected, mean_or_model)
+
+    if p !=0 :
+        st.pyplot(plot[0])
+
     
     #%% CMIP TS DOWNLOADING 
     
