@@ -10,6 +10,7 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 import streamlit as st
 from io import BytesIO
+import matplotlib.pyplot as plt
 
 
 # functions
@@ -51,6 +52,16 @@ def nearest_point_cmip(lon_, lat_, nc_input):
 
     return pd.Series(temperature, index=time)
 
+def plot_annualcycle(local_annual_cycle, cmip_annual_cycle, mean_or_max, period, model_or_mean):
+    fig, ax = plt.subplots()
+    ax.plot(local_annual_cycle.index, local_annual_cycle.values, label='Local')
+    ax.plot(cmip_annual_cycle.index, cmip_annual_cycle.values, label='Global')
+    ax.legend() 
+    ax.set_title(f"{mean_or_max} - {model_or_mean} - {period}")
+    plt.grid(True)
+    plot_obj = (fig, ax)
+    plt.show()
+    return plot_obj
 
 #%%INPUTS
 
