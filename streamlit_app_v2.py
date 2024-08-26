@@ -373,6 +373,7 @@ mean_or_max = st.selectbox('Mean ou Max ?', ['mean', 'max'])
 historical_or_projected = st.selectbox('Historical ou Projected ?', ['historical', 'projected'])
 mean_or_model = st.selectbox('Mean ou Model ?', ['mean', 'model'])
 
+
 object_name = f"{historical_or_projected}_{mean_or_model}__{mean_or_max}"
 
 st.stop()
