@@ -368,7 +368,7 @@ if uploaded_file is not None: # conformité des fichiers ?
     else :
         print("L'année de fin de vie dépasse la période prédite.")    
 
-#%% VALIDATION PRSTART - observed data
+#%% VALIDATION PRESTART - observed data
 
 # TS_DS : on moyenne, prend le max mensuellement
 case_study_mast_monthly_mean_xts = case_study_mast_hourly_xts.resample('M').mean()
