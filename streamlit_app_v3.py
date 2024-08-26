@@ -336,7 +336,7 @@ if uploaded_file is not None: # conformité des fichiers ?
             slope_extract = regression_extract.params[1]
 
         slope_extract = round(slope_extract, 2)
-        st.write(f"Indicative annual average temperature increase on selected period (from {implementation_year}-{implementation_month} to str(final_year)}-{implementation_month}): {slope_extract}°C/year")
+        st.write(f"Indicative annual average temperature increase on selected period (from {implementation_year}-{implementation_month} to {str(final_year)}-{implementation_month}): {slope_extract}°C/year")
         
         wb = Workbook()
         ws = wb.active
