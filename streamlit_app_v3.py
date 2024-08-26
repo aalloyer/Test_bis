@@ -354,17 +354,17 @@ if uploaded_file is not None: # conformité des fichiers ?
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
 
-        if not telecharge:
-            telecharge = st.download_button(
-                label="Télécharger le fichier Excel",
-                data=output,
-                file_name="T&WS-TS.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                key="download_button_1"
-            )
+        #if not telecharge:
+        #    telecharge = st.download_button(
+        #        label="Télécharger le fichier Excel",
+        #        data=output,
+        #        file_name="T&WS-TS.xlsx",
+        #        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        #        key="download_button_1"
+        #    )
 
-        if telecharge:
-            st.write("Le fichier a été téléchargé. L'exécution du code s'arrête ici.")
+        #if telecharge:
+        #    st.write("Le fichier a été téléchargé. L'exécution du code s'arrête ici.")
     else :
         print("L'année de fin de vie dépasse la période prédite.")    
 
