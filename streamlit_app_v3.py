@@ -317,7 +317,7 @@ if uploaded_file is not None: # conformité des fichiers ?
         # extraction température moyenne et la slope
         mean_temperature_extract_value = np.mean(mean_temperature_extract_series.values)
         mean_temperature_extract_value = round(mean_temperature_extract_value, 2)
-        st.write(f"Mean temperature on selected period ((from {implementation_year}-{implementation_month} to {str(final_year)}-{implementation_month}) : {mean_temperature_extract_value}°C")
+        st.write(f"Mean temperature on selected period (from {implementation_year}-{implementation_month} to {str(final_year)}-{implementation_month}) : {mean_temperature_extract_value}°C")
         
         if int(implementation_month) != 1 :
             for_slope_xts = mean_temperature_extract_series[f"{int(implementation_year)+1}-01-01":
