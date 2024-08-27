@@ -352,8 +352,9 @@ def excel_downloading(output_tot) :
     else :
         print("L'année de fin de vie dépasse la période prédite.")
         output_extract = 0
-       
-    return output_extract_df
+    
+    output_list = [output_extract_df, mean_temperature_series] 
+    return output_list
     
 @st.cache_data
 def validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end) :
@@ -548,6 +549,9 @@ if uploaded_file is not None:
     case_study_mast_hourly_windspeed_xts = output_list[4]
     case_study_mast_hourly_xts = output_list[5]
 
+    output_excel_downloading =  excel_downloading(output_tot)
+    output_extract_df = output_excel_downloading[0]
+    mean_temperature_series  = output_excel_downloading[1]
 
 
     output_extract_df = excel_downloading(output_tot)
