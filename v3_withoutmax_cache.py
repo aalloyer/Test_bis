@@ -276,7 +276,7 @@ def excel_processing(lon_, lat_, case_study) :
                                case_study_proj_2_xts, 
                                case_study_proj_3_xts])
     
-    output_list = [output_tot,temperature_hist_xts_tot, temperature_proj_xts_tot, regression_df_tot]
+    output_list = [output_tot,temperature_hist_xts_tot, temperature_proj_xts_tot, regression_df_tot, case_study_mast_hourly_windspeed_xts]
     return output_list
 
 #%%INPUTS
@@ -313,6 +313,8 @@ if uploaded_file is not None:
     temperature_hist_xts_tot = output_list[1]
     temperature_proj_xts_tot = output_list[2]
     regression_df_tot = output_list[3]
+    case_study_mast_hourly_windspeed_xts = output_list[4]
+    
     output_df = pd.DataFrame(output_tot, index = model_list )
     output_all_list = []
     
