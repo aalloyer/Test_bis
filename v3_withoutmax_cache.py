@@ -551,7 +551,7 @@ if uploaded_file is not None:
 
 
     output_extract_df = excel_downloading(output_tot)
-    if if not output_extract_df.empty:
+    if not output_extract_df.empty:
         wb = Workbook()
         ws = wb.active
         ws.title = "Temperature Projection - extract period"
