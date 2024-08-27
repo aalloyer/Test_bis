@@ -355,7 +355,7 @@ def excel_downloading(output_tot) :
     return output_list
     
 @st.cache_data
-def validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end, output_all_list) :
+def validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end) :
     #%% VALIDATION PRESTART - observed data
     
     # TS_DS : on moyenne, prend le max mensuellement
@@ -552,7 +552,7 @@ if uploaded_file is not None:
     mean_temperature_series  = output_excel_downloading[1]
     windfarm_start = output_excel_downloading[2]
     windfarm_end = output_excel_downloading[3]
-    ouput_all_list = output_excel_downloading[4]
+    output_all_list = output_excel_downloading[4]
     
     if not output_extract_df.empty:
         wb = Workbook()
