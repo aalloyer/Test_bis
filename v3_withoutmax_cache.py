@@ -372,7 +372,7 @@ def validation_process(case_study_mast_hourly_xts,mean_temperature_series, tempe
     #MEAN
     
     # projection
-    mean_brut_proj_values  = np.mean([ts.values for ts in mean_temperature_series], axis=0)
+    mean_brut_proj_values  = np.mean([ts.values for ts in temperature_proj_xts_tot], axis=0)
     mean_brut_proj_xts = pd.Series(mean_brut_proj_values, index =temperature_proj_xts_tot[0].index)
     # temperature_proj_xts_tot.append(mean_brut_proj_xts) 
     del mean_brut_proj_values
