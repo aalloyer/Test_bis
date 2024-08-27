@@ -354,7 +354,8 @@ def excel_downloading(output_tot) :
         output_extract = 0
        
     return output_extract_df
-
+    
+@st.cache_data
 def validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end) :
     #%% VALIDATION PRESTART - observed data
     
