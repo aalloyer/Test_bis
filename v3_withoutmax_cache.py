@@ -37,7 +37,6 @@ def Qmap_ds(GF, GH, SH):
     SF = np.quantile(SH, np.searchsorted(cdf_GH, GF, side='right') / len(cdf_GH))
     return SF
 
-# rajouter _ (pour _nc_input)au début d'une variable car fichiers .nc ne sont pas hashables. en revanche streamlit ne regarde plus cet élément pour la mise en cache.. solution : rajouter une autre variable 
 @st.cache_data
 def nearest_point_cmip(lon_, lat_, path_nc): 
     files = os.listdir(path_nc)
@@ -70,34 +69,13 @@ def plot_annualcycle(local_annual_cycle, cmip_annual_cycle, mean_or_max, period,
     plt.show()
     return plot_obj
 
-#%%INPUTS
-
-# geographical data input
-st.sidebar.title("INPUTS")
-
-# afficher hypothèses sur longitude et latitude
-lon_site = st.sidebar.number_input("Longitude (from 0° to 360°) : ", step=0.1)
-lat_site = st.sidebar.number_input("Latitude (from -90° [south] to 90° [north])", step=0.1) # intervalle ? 
-implementation_date = st.sidebar.text_input("Commission date (MM/YYYY)")
-lifetime = st.sidebar.number_input("Wind farm lifetime (in years)", step=1) 
-
-#%% Interface
-telecharge = False
-if 'uploaded_data' not in st.session_state:
-    st.session_state['uploaded_data'] = None
-
-uploaded_file = st.file_uploader("Choose a file")
-
-if uploaded_file is not None:
-    st.session_state['uploaded_data'] = pd.read_excel(uploaded_file,
-                            sheet_name="Reconst", 
-                            skiprows=3)
-    case_study_mast = st.session_state['uploaded_data']
-
+@st.cache_data
+def excel_processing(lon_, lat_, case_study) :
+    
     case_study_mast_df = pd.DataFrame({
-        'Date': case_study_mast['TimeStamp'],
-        'temperature': case_study_mast['T° 4m LT dowscaled'],
-        'windspeed': case_study_mast['WS 120m LT reconst MCP']
+        'Date': case_study['TimeStamp'],
+        'temperature': case_study['T° 4m LT dowscaled'],
+        'windspeed': case_study['WS 120m LT reconst MCP']
     })
     case_study_mast_df = case_study_mast_df.iloc[1:] 
     case_study_mast_df['temperature'] = pd.to_numeric(case_study_mast_df['temperature'], errors='coerce')
@@ -194,7 +172,7 @@ if uploaded_file is not None:
             
             #CMIP DATA TREATMENT - HISTORICAL 
             path_cmip_hist = f"{path_data}/historical/{model}_historical/"   
-            temperature_hist_xts = nearest_point_cmip(lon_=lon_site, lat_=lat_site,path_nc = path_cmip_hist)
+            temperature_hist_xts = nearest_point_cmip(lon_=lon_, lat_=lat_,path_nc = path_cmip_hist)
             temperature_hist_xts = temperature_hist_xts - 273.15
             temperature_hist_xts = temperature_hist_xts[
                 case_study_mast_hourly_xts.index[0]: case_study_mast_hourly_xts.index[-1]
@@ -203,7 +181,7 @@ if uploaded_file is not None:
             
             #CMIP DATA TREATMENT - PROJECTION 
             path_cmip_proj = f"{path_data}/ssp3_7_0/{model}_ssp3_7_0/"
-            temperature_proj_xts = nearest_point_cmip(lon_=lon_site, lat_=lat_site, path_nc = path_cmip_proj)
+            temperature_proj_xts = nearest_point_cmip(lon_=lon_, lat_=lat_, path_nc = path_cmip_proj)
             temperature_proj_xts = temperature_proj_xts - 273.15
             temperature_proj_xts_tot.append(temperature_proj_xts)
 
@@ -298,7 +276,37 @@ if uploaded_file is not None:
                                case_study_proj_2_xts, 
                                case_study_proj_3_xts])
     
+    output_list = [output_tot,temperature_hist_xts_tot, temperature_proj_xts_tot, regression_df_tot]
+    return output_list
 
+#%%INPUTS
+
+# geographical data input
+st.sidebar.title("INPUTS")
+
+# afficher hypothèses sur longitude et latitude
+lon_site = st.sidebar.number_input("Longitude (from 0° to 360°) : ", step=0.1)
+lat_site = st.sidebar.number_input("Latitude (from -90° [south] to 90° [north])", step=0.1) # intervalle ? 
+implementation_date = st.sidebar.text_input("Commission date (MM/YYYY)")
+lifetime = st.sidebar.number_input("Wind farm lifetime (in years)", step=1) 
+
+#%% Interface
+telecharge = False
+if 'uploaded_data' not in st.session_state:
+    st.session_state['uploaded_data'] = None
+
+uploaded_file = st.file_uploader("Choose a file")
+
+if uploaded_file is not None:
+    st.session_state['uploaded_data'] = pd.read_excel(uploaded_file,
+                            sheet_name="Reconst", 
+                            skiprows=3)
+    case_study_mast = st.session_state['uploaded_data']
+    output_list = excel_processing(lon_, lat_, case_study_mast)
+    output_tot = output_list[0]
+    temperature_hist_xts_tot = output_list[1]
+    temperature_proj_xts_tot = output_list[2]
+    regression_df_tot = output_list[3]
     output_df = pd.DataFrame(output_tot, index = model_list )
     output_all_list = []
     
