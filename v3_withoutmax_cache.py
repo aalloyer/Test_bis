@@ -355,7 +355,7 @@ def excel_downloading(output_tot) :
     return output_list
     
 @st.cache_data
-def validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end) :
+def validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end, output_all_list) :
     #%% VALIDATION PRESTART - observed data
     
     # TS_DS : on moyenne, prend le max mensuellement
