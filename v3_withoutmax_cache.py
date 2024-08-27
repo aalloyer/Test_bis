@@ -646,11 +646,11 @@ if uploaded_file is not None:
                   'gfdl_esm4',
                   'ipsl_cm6a_lr',
                   'mri_esm2_0']
-
+    
     if st.checkbox('Climate models projected monthly mean temperature TS extraction (Downloading may take time and is not recommended.'):
         wb = Workbook()
     
-        for i in range():
+        for i in range(len(model_list)):
             ws = wb.create_sheet(title=f"{model_list[i]}")
             data = {
                 "Timestamp" : mean_cmip_tot[i].index,
