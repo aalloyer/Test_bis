@@ -37,9 +37,12 @@ def Qmap_ds(GF, GH, SH):
     SF = np.quantile(SH, np.searchsorted(cdf_GH, GF, side='right') / len(cdf_GH))
     return SF
 
+# rajouter _ (pour _nc_input)au début d'une variable car fichiers .nc ne sont pas hashables. en revanche streamlit ne regarde plus cet élément pour la mise en cache.. solution : rajouter une autre variable 
 @st.cache_data
-def nearest_point_cmip(lon_, lat_, nc_input):
-    lon = nc_input.variables["lon"][:]
+def nearest_point_cmip(lon_, lat_, path_nc): 
+    files = os.listdir(path_nc)
+    nc_input = nc.Dataset(f"{path_nc}{files[0]}")
+        lon = nc_input.variables["lon"][:]
     lat = nc_input.variables["lat"][:]
     time_var = nc_input.variables["time"]
     time = nc.num2date(time_var[:], 
