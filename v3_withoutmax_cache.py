@@ -557,16 +557,16 @@ if uploaded_file is not None:
         ws.title = "Temperature Projection - extract period"
         for r in dataframe_to_rows(output_extract_df, index=False, header=True):
                 ws.append(r)
-            wb.save("Temperature Projection - extract period.xlsx")
-            output = BytesIO()
-            wb.save(output)
-            output.seek(0)
-            st.download_button(
-                label="Télécharger le fichier Excel",
-                data=output,
-                file_name="T&WS-TS.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
+        wb.save("Temperature Projection - extract period.xlsx")
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+        st.download_button(
+            label="Télécharger le fichier Excel",
+            data=output,
+            file_name="T&WS-TS.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
 
     # Validation
     dico_tot = validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end)
