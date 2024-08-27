@@ -302,7 +302,7 @@ if uploaded_file is not None:
                             sheet_name="Reconst", 
                             skiprows=3)
     case_study_mast = st.session_state['uploaded_data']
-    output_list = excel_processing(lon_, lat_, case_study_mast)
+    output_list = excel_processing(lon_site, lat_site, case_study_mast)
     output_tot = output_list[0]
     temperature_hist_xts_tot = output_list[1]
     temperature_proj_xts_tot = output_list[2]
