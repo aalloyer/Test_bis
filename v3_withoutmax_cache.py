@@ -194,7 +194,7 @@ if uploaded_file is not None:
             
             #CMIP DATA TREATMENT - HISTORICAL 
             path_cmip_hist = f"{path_data}/historical/{model}_historical/"   
-            temperature_hist_xts = nearest_point_cmip(lon_=lon_site, lat_=lat_site, path_cmip_hist)
+            temperature_hist_xts = nearest_point_cmip(lon_=lon_site, lat_=lat_site,path_nc = path_cmip_hist)
             temperature_hist_xts = temperature_hist_xts - 273.15
             temperature_hist_xts = temperature_hist_xts[
                 case_study_mast_hourly_xts.index[0]: case_study_mast_hourly_xts.index[-1]
@@ -203,7 +203,7 @@ if uploaded_file is not None:
             
             #CMIP DATA TREATMENT - PROJECTION 
             path_cmip_proj = f"{path_data}/ssp3_7_0/{model}_ssp3_7_0/"
-            temperature_proj_xts = nearest_point_cmip(lon_=lon_site, lat_=lat_site, path_cmip_proj)
+            temperature_proj_xts = nearest_point_cmip(lon_=lon_site, lat_=lat_site, path_nc = path_cmip_proj)
             temperature_proj_xts = temperature_proj_xts - 273.15
             temperature_proj_xts_tot.append(temperature_proj_xts)
 
