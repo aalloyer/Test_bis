@@ -89,7 +89,7 @@ if uploaded_file is not None:
     st.session_state['uploaded_data'] = pd.read_excel(uploaded_file,
                             sheet_name="Reconst", 
                             skiprows=3)
-    case_study_mast_df = st.session_state['uploaded_data']
+    case_study_mast = st.session_state['uploaded_data']
 
     case_study_mast_df = pd.DataFrame({
         'Date': case_study_mast['TimeStamp'],
