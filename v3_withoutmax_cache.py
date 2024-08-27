@@ -507,7 +507,7 @@ def validation_process(case_study_mast_hourly_xts,mean_temperature_series, tempe
         'mean_projected_mean': cmip_proj_mean_annual_cycle_mean,
         'mean_projected_model':cmip_projected_model_annual_cycle_mean}
 
-    dico_tot = [dico_local, dico_global, mean_brut_hist_xts]
+    dico_tot = [dico_local, dico_global, mean_brut_hist_xts, mean_brut_proj_xts]
     return dico_tot 
     
 #%%INPUTS
@@ -576,6 +576,7 @@ if uploaded_file is not None:
     dico_local = dico_tot[0]
     dico_global = dico_tot[1]
     mean_brut_hist_xts = dico_tot[2]
+    mean_brut_proj_xts = dico_tot[3]
     
     model_list_max = ['cnrm_esm2_1',
                   'fgoals_g3',
