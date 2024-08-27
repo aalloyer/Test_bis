@@ -351,7 +351,7 @@ def excel_downloading(output_tot) :
         print("L'année de fin de vie dépasse la période prédite.")
         output_extract = 0
     
-    output_list = [output_extract_df, mean_temperature_series, windfarm_start, windfarm_end] 
+    output_list = [output_extract_df, mean_temperature_series, windfarm_start, windfarm_end, output_all_list] 
     return output_list
     
 @st.cache_data
@@ -552,6 +552,7 @@ if uploaded_file is not None:
     mean_temperature_series  = output_excel_downloading[1]
     windfarm_start = output_excel_downloading[2]
     windfarm_end = output_excel_downloading[3]
+    ouput_all_list = output_excel_downloading[4]
     
     if not output_extract_df.empty:
         wb = Workbook()
