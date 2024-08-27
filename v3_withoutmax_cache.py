@@ -284,42 +284,8 @@ def excel_processing(lon_, lat_, case_study) :
                    case_study_mast_hourly_xts]
     return output_list
 
-#%%INPUTS
-
-# geographical data input
-st.sidebar.title("INPUTS")
-
-# afficher hypothèses sur longitude et latitude
-lon_site = st.sidebar.number_input("Longitude (from 0° to 360°) : ", step=0.1)
-lat_site = st.sidebar.number_input("Latitude (from -90° [south] to 90° [north])", step=0.1) # intervalle ? 
-implementation_date = st.sidebar.text_input("Commission date (MM/YYYY)")
-lifetime = st.sidebar.number_input("Wind farm lifetime (in years)", step=1) 
-model_list = ['bcc_csm2_mr',
-              'cnrm_esm2_1',
-              'fgoals_g3',
-              'gfdl_esm4',
-              'ipsl_cm6a_lr',
-              'mri_esm2_0']
-
-#%% Interface
-telecharge = False
-if 'uploaded_data' not in st.session_state:
-    st.session_state['uploaded_data'] = None
-
-uploaded_file = st.file_uploader("Choose a file")
-
-if uploaded_file is not None:
-    st.session_state['uploaded_data'] = pd.read_excel(uploaded_file,
-                            sheet_name="Reconst", 
-                            skiprows=3)
-    case_study_mast = st.session_state['uploaded_data']
-    output_list = excel_processing(lon_site, lat_site, case_study_mast)
-    output_tot = output_list[0]
-    temperature_hist_xts_tot = output_list[1]
-    temperature_proj_xts_tot = output_list[2]
-    regression_df_tot = output_list[3]
-    case_study_mast_hourly_windspeed_xts = output_list[4]
-    case_study_mast_hourly_xts = output_list[5]
+@st.cache_data
+def excel_downloading(output_tot) :
     output_df = pd.DataFrame(output_tot, index = model_list )
     output_all_list = []
     
@@ -380,40 +346,16 @@ if uploaded_file is not None:
             X_i = sm.add_constant(for_slope_year)  
             regression_extract= sm.OLS(for_slope_annual_xts, X_i).fit()
             slope_extract = regression_extract.params[1]
-
-        slope_extract = round(slope_extract, 2)
-        st.write(f"Indicative annual average temperature increase on selected period (from {implementation_year}-{implementation_month} to {str(final_year)}-{implementation_month}): {slope_extract}°C/year")
+            slope_extract = round(slope_extract, 2)
+            st.write(f"Indicative annual average temperature increase on selected period (from {implementation_year}-{implementation_month} to {str(final_year)}-{implementation_month}): {slope_extract}°C/year")
         
-        wb = Workbook()
-        ws = wb.active
-        ws.title = "Temperature Projection - extract period"
-        for r in dataframe_to_rows(output_extract_df, index=False, header=True):
-            ws.append(r)
-        wb.save("Temperature Projection - extract period.xlsx")
-        output = BytesIO()
-        wb.save(output)
-        output.seek(0)
-        st.download_button(
-        label="Télécharger le fichier Excel",
-        data=output,
-        file_name="T&WS-TS.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-
-        #if not telecharge:
-        #    telecharge = st.download_button(
-        #        label="Télécharger le fichier Excel",
-        #        data=output,
-        #        file_name="T&WS-TS.xlsx",
-        #        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        #        key="download_button_1"
-        #    )
-
-        #if telecharge:
-        #    st.write("Le fichier a été téléchargé. L'exécution du code s'arrête ici.")
     else :
-        print("L'année de fin de vie dépasse la période prédite.")    
+        print("L'année de fin de vie dépasse la période prédite.")
+        output_extract = 0
+       
+    return output_extract_df
 
+def validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end) :
     #%% VALIDATION PRESTART - observed data
     
     # TS_DS : on moyenne, prend le max mensuellement
@@ -430,7 +372,7 @@ if uploaded_file is not None:
     #MEAN
     
     # projection
-    mean_brut_proj_values  = np.mean([ts.values for ts in temperature_proj_xts_tot], axis=0)
+    mean_brut_proj_values  = np.mean([ts.values for ts in mean_temperature_series], axis=0)
     mean_brut_proj_xts = pd.Series(mean_brut_proj_values, index =temperature_proj_xts_tot[0].index)
     # temperature_proj_xts_tot.append(mean_brut_proj_xts) 
     del mean_brut_proj_values
@@ -564,6 +506,71 @@ if uploaded_file is not None:
         'mean_historical_model' : cmip_historical_model_annual_cycle_mean,
         'mean_projected_mean': cmip_proj_mean_annual_cycle_mean,
         'mean_projected_model':cmip_projected_model_annual_cycle_mean}
+
+    dico_tot = [dico_local, dico_global]
+    return dico_tot
+    
+#%%INPUTS
+
+# geographical data input
+st.sidebar.title("INPUTS")
+
+# afficher hypothèses sur longitude et latitude
+lon_site = st.sidebar.number_input("Longitude (from 0° to 360°) : ", step=0.1)
+lat_site = st.sidebar.number_input("Latitude (from -90° [south] to 90° [north])", step=0.1) # intervalle ? 
+implementation_date = st.sidebar.text_input("Commission date (MM/YYYY)")
+lifetime = st.sidebar.number_input("Wind farm lifetime (in years)", step=1) 
+model_list = ['bcc_csm2_mr',
+              'cnrm_esm2_1',
+              'fgoals_g3',
+              'gfdl_esm4',
+              'ipsl_cm6a_lr',
+              'mri_esm2_0']
+
+#%% Interface
+telecharge = False
+if 'uploaded_data' not in st.session_state:
+    st.session_state['uploaded_data'] = None
+
+uploaded_file = st.file_uploader("Choose a file")
+
+if uploaded_file is not None:
+    st.session_state['uploaded_data'] = pd.read_excel(uploaded_file,
+                            sheet_name="Reconst", 
+                            skiprows=3)
+    case_study_mast = st.session_state['uploaded_data']
+    output_list = excel_processing(lon_site, lat_site, case_study_mast)
+    output_tot = output_list[0]
+    temperature_hist_xts_tot = output_list[1]
+    temperature_proj_xts_tot = output_list[2]
+    regression_df_tot = output_list[3]
+    case_study_mast_hourly_windspeed_xts = output_list[4]
+    case_study_mast_hourly_xts = output_list[5]
+
+
+
+    output_extract_df = excel_downloading(output_tot)
+    if output_extract_df != 0:
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Temperature Projection - extract period"
+        for r in dataframe_to_rows(output_extract_df, index=False, header=True):
+                ws.append(r)
+            wb.save("Temperature Projection - extract period.xlsx")
+            output = BytesIO()
+            wb.save(output)
+            output.seek(0)
+            st.download_button(
+                label="Télécharger le fichier Excel",
+                data=output,
+                file_name="T&WS-TS.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+
+    # Validation
+    dico_tot = validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end)
+    dico_local = dico_tot[0]
+    dico_global = dico_tot[1]
     
     model_list_max = ['cnrm_esm2_1',
                   'fgoals_g3',
@@ -612,7 +619,6 @@ if uploaded_file is not None:
     
     #%% CMIP TS DOWNLOADING 
     
-    # MEAN 
     
     mean_cmip_tot = []
     
