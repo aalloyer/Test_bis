@@ -552,9 +552,6 @@ if uploaded_file is not None:
     output_excel_downloading =  excel_downloading(output_tot)
     output_extract_df = output_excel_downloading[0]
     mean_temperature_series  = output_excel_downloading[1]
-
-
-    output_extract_df = excel_downloading(output_tot)
     if not output_extract_df.empty:
         wb = Workbook()
         ws = wb.active
