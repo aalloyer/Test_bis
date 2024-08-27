@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 
 # functions
-@st.cache
+@st.cache_data
 def CDFt_ds(GF, GH, SH):
     cdf_GF = np.sort(GF)
     u_GF = np.searchsorted(cdf_GF, GF, side='right') / len(cdf_GF)
@@ -31,13 +31,13 @@ def CDFt_ds(GF, GH, SH):
     interpolated_values_full = pd.Series(interpolated_values).interpolate(method='linear').to_numpy()
     return interpolated_values_full
 
-@st.cache
+@st.cache_data
 def Qmap_ds(GF, GH, SH):
     cdf_GH = np.sort(GH)
     SF = np.quantile(SH, np.searchsorted(cdf_GH, GF, side='right') / len(cdf_GH))
     return SF
 
-@st.cache
+@st.cache_data
 def nearest_point_cmip(lon_, lat_, nc_input):
     lon = nc_input.variables["lon"][:]
     lat = nc_input.variables["lat"][:]
@@ -55,7 +55,7 @@ def nearest_point_cmip(lon_, lat_, nc_input):
 
     return pd.Series(temperature, index=time)
   
-@st.cache
+@st.cache_data
 def plot_annualcycle(local_annual_cycle, cmip_annual_cycle, mean_or_max, period, model_or_mean):
     fig, ax = plt.subplots()
     ax.plot(local_annual_cycle.index, local_annual_cycle.values, label='Local')
