@@ -42,7 +42,7 @@ def Qmap_ds(GF, GH, SH):
 def nearest_point_cmip(lon_, lat_, path_nc): 
     files = os.listdir(path_nc)
     nc_input = nc.Dataset(f"{path_nc}{files[0]}")
-        lon = nc_input.variables["lon"][:]
+    lon = nc_input.variables["lon"][:]
     lat = nc_input.variables["lat"][:]
     time_var = nc_input.variables["time"]
     time = nc.num2date(time_var[:], 
