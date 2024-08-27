@@ -623,8 +623,7 @@ if uploaded_file is not None:
         st.pyplot(my_fig)
 
     
-    #%% CMIP TS DOWNLOADING 
-    
+    #%% CMIP TS DOWNLOADING  : SEPARER PROJ DE HIST 
     
     mean_cmip_tot = []
     
