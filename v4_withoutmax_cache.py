@@ -673,7 +673,7 @@ if uploaded_file is not None:
                            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
       if projected_checked : 
-                wb = Workbook()
+        wb = Workbook()
         for i in range(len(model_list)):
             ws = wb.create_sheet(title=f"{model_list[i]}")
             data = {
