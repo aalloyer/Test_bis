@@ -547,7 +547,7 @@ if uploaded_file is not None:
     case_study_mast_hourly_windspeed_xts = output_list[4]
     case_study_mast_hourly_xts = output_list[5]
 
-    output_excel_downloading =  excel_downloading(output_tot, lon_, lat_, implementation_date, lifetime)
+    output_excel_downloading =  excel_downloading(output_tot, lon_site, lat_site, implementation_date, lifetime)
     output_extract_df = output_excel_downloading[0]
     mean_temperature_series  = output_excel_downloading[1]
     windfarm_start = output_excel_downloading[2]
