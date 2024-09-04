@@ -369,7 +369,7 @@ def excel_downloading(output_tot, lon_, lat_, implementation_date, lifetime) :
 @st.cache_data
 def validation_process(case_study_mast_hourly_xts, mean_temperature_series, temperature_proj_xts_tot, windfarm_start, windfarm_end, lon_, lat_, implementaton_date, lifetime) :
     current_time = datetime.datetime.now()
-    st.write("validation_process en exécution à {current_time}")
+    st.write(f"validation_process en exécution à {current_time}")
     #%% VALIDATION PRESTART - observed data
     
     # TS_DS : on moyenne, prend le max mensuellement
