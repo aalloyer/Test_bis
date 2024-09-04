@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 # functions
 @st.cache_data
 def CDFt_ds(GF, GH, SH):
+    st.write("CDFt_ds en exécution")
     cdf_GF = np.sort(GF)
     u_GF = np.searchsorted(cdf_GF, GF, side='right') / len(cdf_GF)
     x_GH = np.quantile(GH, u_GF)
@@ -33,12 +34,14 @@ def CDFt_ds(GF, GH, SH):
 
 @st.cache_data
 def Qmap_ds(GF, GH, SH):
+    st.write("Qmap_ds en exécution")
     cdf_GH = np.sort(GH)
     SF = np.quantile(SH, np.searchsorted(cdf_GH, GF, side='right') / len(cdf_GH))
     return SF
 
 @st.cache_data
 def nearest_point_cmip(lon_, lat_, path_nc): 
+    st.write("nearest_point_cmip en exécution")
     files = os.listdir(path_nc)
     nc_input = nc.Dataset(f"{path_nc}{files[0]}")
     lon = nc_input.variables["lon"][:]
@@ -59,6 +62,7 @@ def nearest_point_cmip(lon_, lat_, path_nc):
   
 @st.cache_data
 def plot_annualcycle(local_annual_cycle, cmip_annual_cycle, mean_or_max, period, model_or_mean):
+    st.write("plot_annualcycle en exécution")
     fig, ax = plt.subplots()
     ax.plot(local_annual_cycle.index, local_annual_cycle.values, label='Local')
     ax.plot(cmip_annual_cycle.index, cmip_annual_cycle.values, label='Global')
@@ -71,7 +75,7 @@ def plot_annualcycle(local_annual_cycle, cmip_annual_cycle, mean_or_max, period,
 
 @st.cache_data
 def excel_processing(lon_, lat_, case_study) :
-    
+    st.write("excel_processing en exécution")
     case_study_mast_df = pd.DataFrame({
         'Date': case_study['TimeStamp'],
         'temperature': case_study['T° 4m LT dowscaled'],
@@ -286,6 +290,7 @@ def excel_processing(lon_, lat_, case_study) :
 
 @st.cache_data
 def excel_downloading(output_tot, lon_, lat_, implementation_date, lifetime) :
+    st.write("excel_downloading en exécution")
     output_df = pd.DataFrame(output_tot, index = model_list )
     output_all_list = []
     
@@ -356,6 +361,7 @@ def excel_downloading(output_tot, lon_, lat_, implementation_date, lifetime) :
     
 @st.cache_data
 def validation_process(case_study_mast_hourly_xts, mean_temperature_series, temperature_proj_xts_tot, windfarm_start, windfarm_end, lon_, lat_, implementaton_date, lifetime) :
+    st.write("validation_process en exécution")
     #%% VALIDATION PRESTART - observed data
     
     # TS_DS : on moyenne, prend le max mensuellement
@@ -508,9 +514,11 @@ def validation_process(case_study_mast_hourly_xts, mean_temperature_series, temp
         'mean_projected_model':cmip_projected_model_annual_cycle_mean}
 
     dico_tot = [dico_local, dico_global, mean_brut_hist_xts, mean_brut_proj_xts]
-    return dico_tot 
+return dico_tot 
     
 #%%INPUTS
+
+st.write("ligne 515")
 
 # geographical data input
 st.sidebar.title("INPUTS")
@@ -526,6 +534,8 @@ model_list = ['bcc_csm2_mr',
               'gfdl_esm4',
               'ipsl_cm6a_lr',
               'mri_esm2_0']
+
+st.write("ligne 532")
 
 #%% Interface
 telecharge = False
@@ -553,6 +563,8 @@ if uploaded_file is not None:
     windfarm_start = output_excel_downloading[2]
     windfarm_end = output_excel_downloading[3]
     output_all_list = output_excel_downloading[4]
+
+    st.write("ligne 561")
     
     if not output_extract_df.empty:
         wb = Workbook()
@@ -571,6 +583,7 @@ if uploaded_file is not None:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
 
+    st.write("ligne 580")
     # Validation
     dico_tot = validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end, lon_site, lat_site, implementation_date, lifetime)
     dico_local = dico_tot[0]
@@ -647,6 +660,9 @@ if uploaded_file is not None:
                   'ipsl_cm6a_lr',
                   'mri_esm2_0',
                   'mean']
+
+    st.write("ligne 658")
+
     
     if st.checkbox('Climate models projected monthly mean temperature TS extraction (Downloading may take time and is not recommended.'):
       historical_checked = st.checkbox('Historical period')
