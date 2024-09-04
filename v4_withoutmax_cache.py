@@ -11,12 +11,14 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 import streamlit as st
 from io import BytesIO
 import matplotlib.pyplot as plt
+import datetime
 
 
 # functions
 @st.cache_data
 def CDFt_ds(GF, GH, SH):
-    st.write("CDFt_ds en exécution")
+    current_time = datetime.datetime.now()
+    st.write(f"CDFt_ds en exécution à {current_time}")
     cdf_GF = np.sort(GF)
     u_GF = np.searchsorted(cdf_GF, GF, side='right') / len(cdf_GF)
     x_GH = np.quantile(GH, u_GF)
@@ -34,14 +36,16 @@ def CDFt_ds(GF, GH, SH):
 
 @st.cache_data
 def Qmap_ds(GF, GH, SH):
-    st.write("Qmap_ds en exécution")
+    current_time = datetime.datetime.now()
+    st.write(f"Qmap_ds en exécution à {current_time}")
     cdf_GH = np.sort(GH)
     SF = np.quantile(SH, np.searchsorted(cdf_GH, GF, side='right') / len(cdf_GH))
     return SF
 
 @st.cache_data
 def nearest_point_cmip(lon_, lat_, path_nc): 
-    st.write("nearest_point_cmip en exécution")
+    current_time = datetime.datetime.now()
+    st.write(f"nearest_point_cmip en exécution à {current_time}")
     files = os.listdir(path_nc)
     nc_input = nc.Dataset(f"{path_nc}{files[0]}")
     lon = nc_input.variables["lon"][:]
@@ -62,7 +66,8 @@ def nearest_point_cmip(lon_, lat_, path_nc):
   
 @st.cache_data
 def plot_annualcycle(local_annual_cycle, cmip_annual_cycle, mean_or_max, period, model_or_mean):
-    st.write("plot_annualcycle en exécution")
+    current_time = datetime.datetime.now()
+    st.write(f"plot_annualcycle en exécution à {current_time}")
     fig, ax = plt.subplots()
     ax.plot(local_annual_cycle.index, local_annual_cycle.values, label='Local')
     ax.plot(cmip_annual_cycle.index, cmip_annual_cycle.values, label='Global')
@@ -75,7 +80,8 @@ def plot_annualcycle(local_annual_cycle, cmip_annual_cycle, mean_or_max, period,
 
 @st.cache_data
 def excel_processing(lon_, lat_, case_study) :
-    st.write("excel_processing en exécution")
+    current_time = datetime.datetime.now()
+    st.write(f"excel_processing en exécution à {current_time}")
     case_study_mast_df = pd.DataFrame({
         'Date': case_study['TimeStamp'],
         'temperature': case_study['T° 4m LT dowscaled'],
@@ -290,7 +296,8 @@ def excel_processing(lon_, lat_, case_study) :
 
 @st.cache_data
 def excel_downloading(output_tot, lon_, lat_, implementation_date, lifetime) :
-    st.write("excel_downloading en exécution")
+    current_time = datetime.datetime.now()
+    st.write(f"excel_downloading en exécution à {current_time}")
     output_df = pd.DataFrame(output_tot, index = model_list )
     output_all_list = []
     
@@ -361,7 +368,8 @@ def excel_downloading(output_tot, lon_, lat_, implementation_date, lifetime) :
     
 @st.cache_data
 def validation_process(case_study_mast_hourly_xts, mean_temperature_series, temperature_proj_xts_tot, windfarm_start, windfarm_end, lon_, lat_, implementaton_date, lifetime) :
-    st.write("validation_process en exécution")
+    current_time = datetime.datetime.now()
+    st.write("validation_process en exécution à {current_time}")
     #%% VALIDATION PRESTART - observed data
     
     # TS_DS : on moyenne, prend le max mensuellement
