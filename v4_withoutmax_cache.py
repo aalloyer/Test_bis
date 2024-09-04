@@ -572,7 +572,7 @@ if uploaded_file is not None:
         )
 
     # Validation
-    dico_tot = validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end, lon_, lat_, implementation_date, lifetime)
+    dico_tot = validation_process(case_study_mast_hourly_xts,mean_temperature_series, temperature_proj_xts_tot,windfarm_start, windfarm_end, lon_site, lat_site, implementation_date, lifetime)
     dico_local = dico_tot[0]
     dico_global = dico_tot[1]
     mean_brut_hist_xts = dico_tot[2]
