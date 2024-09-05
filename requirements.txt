@@ -8,4 +8,5 @@ statsmodels
 s3fs
 st-files-connection
 matplotlib
+pkg_resources
 cdsapi
