@@ -1,4 +1,3 @@
-pkg_resources
 numpy
 pandas
 netCDF4
@@ -9,4 +8,3 @@ statsmodels
 s3fs
 st-files-connection
 matplotlib
-cdsapi
