@@ -2,10 +2,11 @@ import streamlit as st
 import cdsapi
 import os
 
+c = cdsapi.Client()
+
 # RAJOUTER LES IDENTIFIANTS API
 # Fonction pour télécharger les données
 def download_data(model, period, experiment):
-    c = cdsapi.Client()
     params = {
         'format': 'zip',
         'temporal_resolution': 'monthly',
