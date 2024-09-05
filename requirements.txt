@@ -8,3 +8,4 @@ statsmodels
 s3fs
 st-files-connection
 matplotlib
+cdsapi
