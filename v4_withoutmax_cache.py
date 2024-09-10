@@ -12,6 +12,10 @@ import streamlit as st
 from io import BytesIO
 import matplotlib.pyplot as plt
 import datetime
+import warnings
+
+warnings.filterwarnings("ignore", message="numpy.dtype size changed")
+warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
 
 # functions
@@ -58,8 +62,8 @@ def nearest_point_cmip(lon_, lat_, path_nc):
     time = pd.to_datetime(time)
     nearest_lon = np.argmin(np.abs(lon - lon_))
     nearest_lat = np.argmin(np.abs(lat - lat_))
-    #st.write(lon[nearest_lon])
-    #st.write(lat[nearest_lat])
+    st.write(lon[nearest_lon])
+    st.write(lat[nearest_lat])
     temperature = nc_input.variables["tas"][:,nearest_lat,nearest_lon]
 
     return pd.Series(temperature, index=time)
