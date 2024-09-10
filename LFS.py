@@ -43,7 +43,9 @@ def nearest_point_cmip(lon_, lat_, path_nc):
                 'ipsl_cm6a_lr',
                 'mri_esm2_0']
   
-  path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data/Near_surface_air_temperature')) 
+path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data/Near_surface_air_temperature')) 
+lon_ = 31,5
+lat_ = 38,9
 
 for model in model_list :
             
