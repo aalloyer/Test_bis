@@ -45,7 +45,7 @@ model_list = ['bcc_csm2_mr',
   
 #path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data/Near_surface_air_temperature')) 
 path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'shrunk_data')) 
-
+print(path_data)
 lon_ = 31.5
 lat_ = 38.9
 
