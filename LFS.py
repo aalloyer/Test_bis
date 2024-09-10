@@ -54,8 +54,8 @@ for model in model_list :
             #CMIP DATA TREATMENT - HISTORICAL 
             path_cmip_hist = f"{path_data}/historical/{model}_historical/"   
             temperature_hist_xts = nearest_point_cmip(lon_=lon_site , lat_=lat_site,path_nc = path_cmip_hist)
-            print(temperature_hist_xts.values[0])
-            print(temperature_hist_xts.index[0])
+            st.write(temperature_hist_xts.values[0])
+            st.write(temperature_hist_xts.index[0])
         
 #    plt.plot(temperature_hist_xts.index, temperature_hist_xts.values, label=model)
 
