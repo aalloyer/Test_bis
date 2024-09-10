@@ -139,7 +139,7 @@ def excel_processing(lon_, lat_, case_study) :
     mean_temperature_historical = round(mean_temperature_historical, 2)
     st.write(f"Mean temperature on past period (from {start_year}-01 to {end_year}-12) : {mean_temperature_historical}°C")
 
-    path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data'))
+    path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data/Near_surface_air_temperature')) 
     #fichiers_data = os.listdir(path_data)
     #st.write(fichiers_data)
     
