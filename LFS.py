@@ -46,14 +46,14 @@ model_list = ['bcc_csm2_mr',
 #path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data/Near_surface_air_temperature')) 
 path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'shrunk_data')) 
 print(path_data)
-lon_ = 31.5
-lat_ = 38.9
+lon_site = 31.5
+lat_site = 38.9
 
 for model in model_list :
             
             #CMIP DATA TREATMENT - HISTORICAL 
             path_cmip_hist = f"{path_data}/historical/{model}_historical/"   
-            temperature_hist_xts = nearest_point_cmip(lon_=lon_, lat_=lat_,path_nc = path_cmip_hist)
+            temperature_hist_xts = nearest_point_cmip(lon_=lon_site , lat_=lat_site,path_nc = path_cmip_hist)
             print(temperature_hist_xts.values[0])
             print(temperature_hist_xts.index[0])
         
