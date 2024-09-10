@@ -36,12 +36,12 @@ def nearest_point_cmip(lon_, lat_, path_nc):
     return pd.Series(temperature, index=time)
 
 
-  model_list = ['bcc_csm2_mr',
-                'cnrm_esm2_1',
-                'fgoals_g3',
-                'gfdl_esm4',
-                'ipsl_cm6a_lr',
-                'mri_esm2_0']
+model_list = ['bcc_csm2_mr',
+              'cnrm_esm2_1',
+              'fgoals_g3',
+              'gfdl_esm4',
+              'ipsl_cm6a_lr',
+              'mri_esm2_0']
   
 path_data = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data/Near_surface_air_temperature')) 
 lon_ = 31,5
