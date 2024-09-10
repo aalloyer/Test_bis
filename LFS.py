@@ -54,15 +54,18 @@ for model in model_list :
             #CMIP DATA TREATMENT - HISTORICAL 
             path_cmip_hist = f"{path_data}/historical/{model}_historical/"   
             temperature_hist_xts = nearest_point_cmip(lon_=lon_, lat_=lat_,path_nc = path_cmip_hist)
-            plt.plot(temperature_hist_xts.index, temperature_hist_xts.values, label=model)
+            print(temperature_hist_xts.values[0])
+            print(temperature_hist_xts.index[0])
+        
+#    plt.plot(temperature_hist_xts.index, temperature_hist_xts.values, label=model)
 
 # Adding labels and title to the plot
-plt.xlabel('Time')
-plt.ylabel('Temperature')
-plt.title('Near Surface Air Temperature')
+#plt.xlabel('Time')
+#plt.ylabel('Temperature')
+#plt.title('Near Surface Air Temperature')
 
 # Adding legend to the plot
-plt.legend()
+#plt.legend()
 
 # Displaying the plot
-plt.show()
+#plt.show()
