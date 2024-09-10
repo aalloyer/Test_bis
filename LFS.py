@@ -15,8 +15,8 @@ import matplotlib.pyplot as plt
 
 @st.cache_data
 def nearest_point_cmip(lon_, lat_, path_nc): 
-    current_time = datetime.datetime.now()
-    st.write(f"nearest_point_cmip en exécution à {current_time}")
+    #current_time = datetime.datetime.now()
+    #st.write(f"nearest_point_cmip en exécution à {current_time}")
     files = os.listdir(path_nc)
     nc_input = nc.Dataset(f"{path_nc}{files[0]}")
     lon = nc_input.variables["lon"][:]
