@@ -4,7 +4,7 @@ import cdsapi
 import os
 
 
-c = cdsapi.Client()
+#c = cdsapi.Client()
 
 # RAJOUTER LES IDENTIFIANTS API
 # Fonction pour télécharger les données
