@@ -9,7 +9,7 @@ import os
 # RAJOUTER LES IDENTIFIANTS API
 # Fonction pour télécharger les données
 def download_data(model, period, experiment):
-    key=st.secrets["key"]
+    key=st.secrets[key]
     c = cdsapi.Client("https://cds.climate.copernicus.eu/api/v2", key)
     params = {
         'format': 'zip',
