@@ -1,21 +1,21 @@
+import setuptools
 import streamlit as st
 import cdsapi
 import os
 
-c = cdsapi.Client()
 
-# afficher hypothèses sur longitude et latitude
-lon_site = st.sidebar.number_input("Longitude (from 0° to 360°) : ", step=0.1)
-lat_site = st.sidebar.number_input("Latitude (from -90° [south] to 90° [north])", step=0.1) # intervalle ? 
+#c = cdsapi.Client()
 
-def download_data(model, period, experiment, lon_site, lat_site):
+# RAJOUTER LES IDENTIFIANTS API
+# Fonction pour télécharger les données
+def download_data(model, period, experiment):
     key=st.secrets["key"]
     c = cdsapi.Client("https://cds.climate.copernicus.eu/api/v2", key)
     params = {
         'format': 'zip',
         'temporal_resolution': 'monthly',
         'experiment': experiment,
-        'area': [lon_site, lat_site],
+        'area': [33, 38, 30, 40],
         'variable': 'near_surface_air_temperature',
         'model': model,
         'year': period,
