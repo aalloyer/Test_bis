@@ -72,7 +72,7 @@ if st.button('Lancer le téléchargement'):
                     zip_ref.extract(nc_filename, path="extracted_files")
                     data.append(os.path.join("extracted_files", nc_filename))
 
-st.write(f'{data}')
+    st.write(f'{data}')
 
 # Sélection du modèle
 # model = st.selectbox('Select a climate model:', ['ipsl_cm6a_lr', 'bcc_csm2_mr', 'cnrm_esm2_1', 'fgoals_g3', 'gfdl_esm4', 'mri_esm2_0'])
