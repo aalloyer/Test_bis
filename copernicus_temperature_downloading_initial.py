@@ -1,3 +1,4 @@
+import setuptools
 import streamlit as st
 import cdsapi
 import os
@@ -23,7 +24,7 @@ def download_data(model, period, experiment):
     filename = f'{model}_{experiment}.zip'
     file = c.retrieve('projections-cmip6', params, filename)
 
-    return file
+    return filename
 
 # Sélection du modèle
 model = st.selectbox('Select a climate model:', ['ipsl_cm6a_lr', 'bcc_csm2_mr', 'cnrm_esm2_1', 'fgoals_g3', 'gfdl_esm4', 'mri_esm2_0'])
