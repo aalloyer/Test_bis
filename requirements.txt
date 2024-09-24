@@ -10,3 +10,4 @@ st-files-connection
 matplotlib
 cdsapi
 setuptools
+zipfile
