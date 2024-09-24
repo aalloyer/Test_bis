@@ -1,4 +1,3 @@
-import setuptools
 import streamlit as st
 import cdsapi
 import os
